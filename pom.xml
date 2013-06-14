@@ -39,5 +39,10 @@
       <artifactId>gephi-toolkit</artifactId>
       <version>0.9-SNAPSHOT</version>
     </dependency>
+    <dependency>
+      <groupId>org.gephi</groupId>
+      <artifactId>layout-plugin-openord</artifactId>
+      <version>0.8.2</version>
+    </dependency>
   </dependencies>
 </project>
