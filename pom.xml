@@ -37,7 +37,7 @@
     <dependency>
       <groupId>org.gephi</groupId>
       <artifactId>gephi-toolkit</artifactId>
-      <version>0.9-SNAPSHOT</version>
+      <version>0.8.2-all</version>
     </dependency>
     <dependency>
       <groupId>org.gephi</groupId>
