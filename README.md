@@ -9,7 +9,17 @@ Large graph visualization based on Gephi.
 Install Dependencies
 --------------------
 
-OpenOrd plugin has to be installed manually (build jar from sources first):
+Build Gephi toolkit 0.8.2 from sources and install with Maven:
+
+    mvn install:install-file \
+      -DgroupId=org.gephi \
+      -DartifactId=gephi-toolkit \
+      -Dversion=0.8.2-all \
+      -Dfile=~/Packages/gephi-toolkit-src/target/gephi-toolkit-0.8.2-all.jar \
+      -Dpackaging=jar \
+      -DgeneratePom=true
+
+Build OpenOrd plugin from sources and install with Maven:
 
     mvn install:install-file \
       -DgroupId=org.gephi \
@@ -19,15 +29,14 @@ OpenOrd plugin has to be installed manually (build jar from sources first):
       -Dpackaging=jar \
       -DgeneratePom=true
 
-(for some reason, this did not work, I had to copy the jar manually to the
-local Maven repository...)
 
-Version 0.8.2 of gephi-toolkit is required:
+Build
+-----
 
-    mvn install:install-file \
-      -DgroupId=org.gephi \
-      -DartifactId=gephi-toolkit \
-      -Dversion=0.8.2-all \
-      -Dfile=~/Packages/gephi-toolkit-src/target/gephi-toolkit-0.8.2-all.jar \
-      -Dpackaging=jar \
-      -DgeneratePom=true
+Run from sources:
+
+    scripts/Lagravis.sh inputfile.csv
+
+Create single jar file that includes all dependencies:
+
+    mvn clean compile assembly:single

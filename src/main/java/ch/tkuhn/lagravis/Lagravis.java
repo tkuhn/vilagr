@@ -37,7 +37,7 @@ public class Lagravis {
 		layout.setGraphModel(gm);
 		layout.resetPropertiesValues();
 		layout.initAlgo();
-		for (int i = 0; i < 1000 && layout.canAlgo(); i++) {
+		while (layout.canAlgo()) {
 			layout.goAlgo();
 		}
 		layout.endAlgo();
@@ -46,7 +46,7 @@ public class Lagravis {
 		if (outputFileName.isEmpty()) outputFileName = "out";
 		outputFileName = outputFileName + ".pdf";
 		try {
-			ec.exportFile(new File("output/" + outputFileName));
+			ec.exportFile(new File(inputFile.getParentFile(), outputFileName));
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}
