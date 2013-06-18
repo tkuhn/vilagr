@@ -1,7 +1,7 @@
 lagravis
 ========
 
-Large graph visualisation based on Gephi.
+Large graph visualization based on Gephi.
 
 **Under construction...**
 
