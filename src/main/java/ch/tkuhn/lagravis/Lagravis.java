@@ -46,7 +46,7 @@ public class Lagravis {
 		if (outputFileName.isEmpty()) outputFileName = "out";
 		outputFileName = outputFileName + ".pdf";
 		try {
-			ec.exportFile(new File(inputFile.getParentFile(), outputFileName));
+			ec.exportFile(new File(inputFile.getAbsoluteFile().getParentFile(), outputFileName));
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}
