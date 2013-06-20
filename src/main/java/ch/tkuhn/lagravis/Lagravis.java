@@ -18,6 +18,7 @@ import org.gephi.io.importer.api.ImportController;
 import org.gephi.io.processor.plugin.DefaultProcessor;
 import org.gephi.layout.plugin.openord.OpenOrdLayoutBuilder;
 import org.gephi.layout.spi.Layout;
+import org.gephi.partition.api.Part;
 import org.gephi.partition.api.Partition;
 import org.gephi.partition.api.PartitionController;
 import org.gephi.partition.plugin.NodeColorTransformer;
@@ -31,6 +32,7 @@ import org.openide.util.Lookup;
 
 public class Lagravis {
 
+	@SuppressWarnings("rawtypes")
 	public static void main(String[] args) {
 		File inputFile = new File(args[0]);
 		String typeCol = "type";
@@ -50,7 +52,7 @@ public class Lagravis {
 		GraphModel gm = Lookup.getDefault().lookup(GraphController.class).getModel();
 
 		PreviewModel model = Lookup.getDefault().lookup(PreviewController.class).getModel();
-		model.getProperties().putValue(PreviewProperty.EDGE_COLOR, new EdgeColor(Color.GRAY));
+		model.getProperties().putValue(PreviewProperty.EDGE_COLOR, new EdgeColor(Color.LIGHT_GRAY));
 		model.getProperties().putValue(PreviewProperty.EDGE_CURVED, false);
 		model.getProperties().putValue(PreviewProperty.EDGE_OPACITY, 2);
 		model.getProperties().putValue(PreviewProperty.ARROW_SIZE, 0);
@@ -66,11 +68,19 @@ public class Lagravis {
 			col = nodeTable.addColumn(typeCol, AttributeType.STRING);
 		}
 		PartitionController partitionController = Lookup.getDefault().lookup(PartitionController.class);
-		@SuppressWarnings("rawtypes")
 		Partition p = partitionController.buildPartition(col, gm.getGraph());
-		NodeColorTransformer nodeColorTransformer = new NodeColorTransformer();
-		nodeColorTransformer.randomizeColors(p);
-		partitionController.transform(p, nodeColorTransformer);
+		NodeColorTransformer transform = new NodeColorTransformer();
+		//nodeColorTransformer.randomizeColors(p);
+		Color[] colors = new Color[] {
+			Color.BLUE, Color.RED, Color.GREEN, Color.YELLOW, Color.PINK, Color.MAGENTA, Color.ORANGE, Color.CYAN
+		};
+		int i = 0;
+		for (Part part : p.getParts()) {
+			transform.getMap().put(part.getValue(), colors[i]);
+			System.out.println(part.getValue() + ": " + colors[i].toString());
+			i = (i + 1) % colors.length;
+		}
+		partitionController.transform(p, transform);
 
 		OpenOrdLayoutBuilder b = new OpenOrdLayoutBuilder();
 		Layout layout = b.buildLayout();
