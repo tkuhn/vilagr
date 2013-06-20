@@ -1,5 +1,6 @@
 package ch.tkuhn.lagravis;
 
+import java.awt.Color;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -12,6 +13,10 @@ import org.gephi.io.importer.api.ImportController;
 import org.gephi.io.processor.plugin.DefaultProcessor;
 import org.gephi.layout.plugin.openord.OpenOrdLayoutBuilder;
 import org.gephi.layout.spi.Layout;
+import org.gephi.preview.api.PreviewController;
+import org.gephi.preview.api.PreviewModel;
+import org.gephi.preview.api.PreviewProperty;
+import org.gephi.preview.types.EdgeColor;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.openide.util.Lookup;
@@ -32,6 +37,16 @@ public class Lagravis {
 		}
 		imp.process(c, new DefaultProcessor(), ws);
 		GraphModel gm = Lookup.getDefault().lookup(GraphController.class).getModel();
+
+		PreviewModel model = Lookup.getDefault().lookup(PreviewController.class).getModel();
+		model.getProperties().putValue(PreviewProperty.EDGE_COLOR, new EdgeColor(Color.BLUE));
+		model.getProperties().putValue(PreviewProperty.EDGE_CURVED, false);
+		model.getProperties().putValue(PreviewProperty.EDGE_OPACITY, 2);
+		model.getProperties().putValue(PreviewProperty.ARROW_SIZE, 0);
+		model.getProperties().putValue(PreviewProperty.EDGE_THICKNESS, 1);
+		model.getProperties().putValue(PreviewProperty.NODE_BORDER_WIDTH, 0);
+		model.getProperties().putValue(PreviewProperty.NODE_OPACITY, 15);
+
 		OpenOrdLayoutBuilder b = new OpenOrdLayoutBuilder();
 		Layout layout = b.buildLayout();
 		layout.setGraphModel(gm);
