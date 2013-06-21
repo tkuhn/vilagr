@@ -59,7 +59,18 @@ public class Lagravis {
 		model.getProperties().putValue(PreviewProperty.ARROW_SIZE, 0);
 		model.getProperties().putValue(PreviewProperty.EDGE_THICKNESS, 1);
 		model.getProperties().putValue(PreviewProperty.NODE_BORDER_WIDTH, 0);
-		model.getProperties().putValue(PreviewProperty.NODE_OPACITY, 10);
+		model.getProperties().putValue(PreviewProperty.NODE_OPACITY, 15);
+
+		OpenOrdLayoutBuilder b = new OpenOrdLayoutBuilder();
+		OpenOrdLayout layout = (OpenOrdLayout) b.buildLayout();
+		layout.resetPropertiesValues();
+		layout.setNumIterations(5000);
+		layout.setGraphModel(gm);
+		layout.initAlgo();
+		while (layout.canAlgo()) {
+			layout.goAlgo();
+		}
+		layout.endAlgo();
 
 		AttributeModel attributeModelLocal = Lookup.getDefault().lookup(AttributeController.class).getModel();
 		AttributeTable nodeTable = attributeModelLocal.getNodeTable();
@@ -77,29 +88,18 @@ public class Lagravis {
 		};
 		int i = 0;
 		for (Part part : p.getParts()) {
-			Color color = colors[i];
 			String v;
 			if (part.getValue() == null) {
 				v = "";
 			} else {
 				v = part.getValue().toString();
 			}
+			Color color = colors[i];
 			transform.getMap().put(part.getValue(), color);
 			System.out.println(v + ": " + color.toString());
 			i = (i + 1) % colors.length;
 		}
 		partitionController.transform(p, transform);
-
-		OpenOrdLayoutBuilder b = new OpenOrdLayoutBuilder();
-		OpenOrdLayout layout = (OpenOrdLayout) b.buildLayout();
-		layout.resetPropertiesValues();
-		layout.setNumIterations(1500);
-		layout.setGraphModel(gm);
-		layout.initAlgo();
-		while (layout.canAlgo()) {
-			layout.goAlgo();
-		}
-		layout.endAlgo();
 
 		ExportController ec = Lookup.getDefault().lookup(ExportController.class);
 		String outputName = inputFile.getName().replaceFirst("[.][^.]+$", "");
