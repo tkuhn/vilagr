@@ -13,6 +13,7 @@ import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.io.exporter.api.ExportController;
+import org.gephi.io.exporter.preview.PNGExporter;
 import org.gephi.io.importer.api.Container;
 import org.gephi.io.importer.api.ImportController;
 import org.gephi.io.processor.plugin.DefaultProcessor;
@@ -76,8 +77,15 @@ public class Lagravis {
 		};
 		int i = 0;
 		for (Part part : p.getParts()) {
-			transform.getMap().put(part.getValue(), colors[i]);
-			System.out.println(part.getValue() + ": " + colors[i].toString());
+			Color color = colors[i];
+			String v;
+			if (part.getValue() == null) {
+				v = "";
+			} else {
+				v = part.getValue().toString();
+			}
+			transform.getMap().put(part.getValue(), color);
+			System.out.println(v + ": " + color.toString());
 			i = (i + 1) % colors.length;
 		}
 		partitionController.transform(p, transform);
@@ -109,8 +117,12 @@ public class Lagravis {
 
 		// Export as PNG:
 		outputFileName = outputName + ".png";
+		PNGExporter pngexp = (PNGExporter) ec.getExporter("png");
+		pngexp.setHeight(4000);
+		pngexp.setWidth(4000);
+		pngexp.setWorkspace(ws);
 		try {
-			ec.exportFile(new File(parent, outputFileName));
+			ec.exportFile(new File(parent, outputFileName), pngexp);
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}
