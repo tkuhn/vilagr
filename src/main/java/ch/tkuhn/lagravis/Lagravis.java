@@ -16,8 +16,8 @@ import org.gephi.io.exporter.api.ExportController;
 import org.gephi.io.importer.api.Container;
 import org.gephi.io.importer.api.ImportController;
 import org.gephi.io.processor.plugin.DefaultProcessor;
+import org.gephi.layout.plugin.openord.OpenOrdLayout;
 import org.gephi.layout.plugin.openord.OpenOrdLayoutBuilder;
-import org.gephi.layout.spi.Layout;
 import org.gephi.partition.api.Part;
 import org.gephi.partition.api.Partition;
 import org.gephi.partition.api.PartitionController;
@@ -83,14 +83,16 @@ public class Lagravis {
 		partitionController.transform(p, transform);
 
 		OpenOrdLayoutBuilder b = new OpenOrdLayoutBuilder();
-		Layout layout = b.buildLayout();
-		layout.setGraphModel(gm);
+		OpenOrdLayout layout = (OpenOrdLayout) b.buildLayout();
 		layout.resetPropertiesValues();
+		layout.setNumIterations(1500);
+		layout.setGraphModel(gm);
 		layout.initAlgo();
 		while (layout.canAlgo()) {
 			layout.goAlgo();
 		}
 		layout.endAlgo();
+
 		ExportController ec = Lookup.getDefault().lookup(ExportController.class);
 		String outputName = inputFile.getName().replaceFirst("[.][^.]+$", "");
 		if (outputName.isEmpty()) outputName = "out";
