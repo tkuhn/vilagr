@@ -53,13 +53,13 @@ public class Lagravis {
 		GraphModel gm = Lookup.getDefault().lookup(GraphController.class).getModel();
 
 		PreviewModel model = Lookup.getDefault().lookup(PreviewController.class).getModel();
-		model.getProperties().putValue(PreviewProperty.EDGE_COLOR, new EdgeColor(Color.LIGHT_GRAY));
+		model.getProperties().putValue(PreviewProperty.EDGE_COLOR, new EdgeColor(Color.GRAY));
 		model.getProperties().putValue(PreviewProperty.EDGE_CURVED, false);
-		model.getProperties().putValue(PreviewProperty.EDGE_OPACITY, 2);
+		model.getProperties().putValue(PreviewProperty.EDGE_OPACITY, 5);
 		model.getProperties().putValue(PreviewProperty.ARROW_SIZE, 0);
-		model.getProperties().putValue(PreviewProperty.EDGE_THICKNESS, 1);
+		model.getProperties().putValue(PreviewProperty.EDGE_THICKNESS, 7);
 		model.getProperties().putValue(PreviewProperty.NODE_BORDER_WIDTH, 0);
-		model.getProperties().putValue(PreviewProperty.NODE_OPACITY, 15);
+		model.getProperties().putValue(PreviewProperty.NODE_OPACITY, 25);
 
 		OpenOrdLayoutBuilder b = new OpenOrdLayoutBuilder();
 		OpenOrdLayout layout = (OpenOrdLayout) b.buildLayout();
@@ -115,9 +115,21 @@ public class Lagravis {
 			ex.printStackTrace();
 		}
 
-		// Export as PNG:
-		outputFileName = outputName + ".png";
+		// Export as small PNG:
+		outputFileName = outputName + "-s.png";
 		PNGExporter pngexp = (PNGExporter) ec.getExporter("png");
+		pngexp.setHeight(1000);
+		pngexp.setWidth(1000);
+		pngexp.setWorkspace(ws);
+		try {
+			ec.exportFile(new File(parent, outputFileName), pngexp);
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
+
+		// Export as large PNG:
+		outputFileName = outputName + ".png";
+		pngexp = (PNGExporter) ec.getExporter("png");
 		pngexp.setHeight(4000);
 		pngexp.setWidth(4000);
 		pngexp.setWorkspace(ws);
