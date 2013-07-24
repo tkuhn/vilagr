@@ -162,13 +162,12 @@ public class Lagravis {
 			outputName = inputFile.getName().replaceFirst("[.][^.]+$", "");
 			if (outputName.isEmpty()) outputName = "out";
 		}
-		File parent = inputFile.getAbsoluteFile().getParentFile();
 
 		for (String s : getProperty("output-formats").split(",")) {
 			if (s.isEmpty()) continue;
 			if (s.equals("pdf")) {
 				try {
-					ec.exportFile(new File(parent, outputName + ".pdf"));
+					ec.exportFile(new File(dir, outputName + ".pdf"));
 				} catch (IOException ex) {
 					ex.printStackTrace();
 				}
@@ -182,7 +181,7 @@ public class Lagravis {
 				pngexp.setWidth(size);
 				pngexp.setWorkspace(ws);
 				try {
-					ec.exportFile(new File(parent, outputName + ".png"), pngexp);
+					ec.exportFile(new File(dir, outputName + ".png"), pngexp);
 				} catch (IOException ex) {
 					ex.printStackTrace();
 				}
