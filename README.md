@@ -35,7 +35,7 @@ Build
 
 Run from sources:
 
-    scripts/Lagravis.sh inputfile.csv
+    scripts/Lagravis.sh params.properties
 
 Create single jar file that includes all dependencies:
 
