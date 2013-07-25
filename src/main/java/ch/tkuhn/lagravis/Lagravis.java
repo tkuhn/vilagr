@@ -17,6 +17,8 @@ import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.Node;
+import org.gephi.graph.api.NodeIterator;
 import org.gephi.io.exporter.api.ExportController;
 import org.gephi.io.exporter.preview.PNGExporter;
 import org.gephi.io.importer.api.Container;
@@ -53,6 +55,7 @@ public class Lagravis {
 
 	private Properties properties = new Properties();
 	private File dir;
+	private GraphModel gm;
 
 	public static void main(String[] args) throws IOException {
 		if (args.length != 1) {
@@ -88,7 +91,7 @@ public class Lagravis {
 			ex.printStackTrace();
 		}
 		imp.process(c, new DefaultProcessor(), ws);
-		GraphModel gm = Lookup.getDefault().lookup(GraphController.class).getModel();
+		gm = Lookup.getDefault().lookup(GraphController.class).getModel();
 
 		PreviewModel model = Lookup.getDefault().lookup(PreviewController.class).getModel();
 		PreviewProperties props = model.getProperties();
@@ -98,23 +101,28 @@ public class Lagravis {
 		Color edgeColor = Color.decode(getProperty("edge-color"));
 		props.putValue(PreviewProperty.EDGE_COLOR, new EdgeColor(edgeColor));
 		props.putValue(PreviewProperty.EDGE_OPACITY, new Float(getProperty("edge-opacity")));
-		props.putValue(PreviewProperty.EDGE_THICKNESS, new Float(getProperty("edge-thickness")));
 		props.putValue(PreviewProperty.NODE_OPACITY, new Float(getProperty("node-opacity")));
 
-		OpenOrdLayoutBuilder b = new OpenOrdLayoutBuilder();
-		OpenOrdLayout layout = (OpenOrdLayout) b.buildLayout();
-		layout.resetPropertiesValues();
-		layout.setLiquidStage(new Integer(getProperty("liquid-stage")));
-		layout.setExpansionStage(new Integer(getProperty("expansion-stage")));
-		layout.setCooldownStage(new Integer(getProperty("cooldown-stage")));
-		layout.setCrunchStage(new Integer(getProperty("crunch-stage")));
-		layout.setSimmerStage(new Integer(getProperty("simmer-stage")));
-		layout.setGraphModel(gm);
-		layout.initAlgo();
-		while (layout.canAlgo()) {
-			layout.goAlgo();
+		// Normalize edge thickness by node size:
+		float edgeThickness = new Float(getProperty("edge-thickness")) * (getNodeSize() / 10.0f);
+		props.putValue(PreviewProperty.EDGE_THICKNESS, edgeThickness);
+
+		if (!getProperty("do-layout").equals("no")) {
+			OpenOrdLayoutBuilder b = new OpenOrdLayoutBuilder();
+			OpenOrdLayout layout = (OpenOrdLayout) b.buildLayout();
+			layout.resetPropertiesValues();
+			layout.setLiquidStage(new Integer(getProperty("liquid-stage")));
+			layout.setExpansionStage(new Integer(getProperty("expansion-stage")));
+			layout.setCooldownStage(new Integer(getProperty("cooldown-stage")));
+			layout.setCrunchStage(new Integer(getProperty("crunch-stage")));
+			layout.setSimmerStage(new Integer(getProperty("simmer-stage")));
+			layout.setGraphModel(gm);
+			layout.initAlgo();
+			while (layout.canAlgo()) {
+				layout.goAlgo();
+			}
+			layout.endAlgo();
 		}
-		layout.endAlgo();
 
 		AttributeModel attributeModelLocal = Lookup.getDefault().lookup(AttributeController.class).getModel();
 		AttributeTable nodeTable = attributeModelLocal.getNodeTable();
@@ -165,13 +173,7 @@ public class Lagravis {
 
 		for (String s : getProperty("output-formats").split(",")) {
 			if (s.isEmpty()) continue;
-			if (s.equals("pdf")) {
-				try {
-					ec.exportFile(new File(dir, outputName + ".pdf"));
-				} catch (IOException ex) {
-					ex.printStackTrace();
-				}
-			} else if (s.matches("png[0-9]*")) {
+			if (s.matches("png[0-9]*")) {
 				int size = 1000;
 				if (s.length() > 3) {
 					size = new Integer(s.substring(3));
@@ -185,6 +187,12 @@ public class Lagravis {
 				} catch (IOException ex) {
 					ex.printStackTrace();
 				}
+			} else {
+				try {
+					ec.exportFile(new File(dir, outputName + "." + s));
+				} catch (IOException ex) {
+					ex.printStackTrace();
+				}
 			}
 		}
 
@@ -194,6 +202,16 @@ public class Lagravis {
 		String value = properties.getProperty(key);
 		if (value != null) return value;
 		return defaultProperties.getProperty(key);
+	}
+
+	private float getNodeSize() {
+		NodeIterator iter = gm.getGraph().getNodes().iterator();
+		while (iter.hasNext()) {
+			Node n = iter.next();
+			if (n == null) continue;
+			return n.getNodeData().getSize();
+		}
+		return 10.0f;
 	}
 
 }

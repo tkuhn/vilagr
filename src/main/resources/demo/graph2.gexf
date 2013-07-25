@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gexf xmlns="http://www.gexf.net/1.2draft" version="1.2" xmlns:viz="http://www.gexf.net/1.2draft/viz" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.gexf.net/1.2draft http://www.gexf.net/1.2draft/gexf.xsd">
+  <meta lastmodifieddate="2013-07-25">
+    <creator>Gephi 0.8.1</creator>
+    <description></description>
+  </meta>
+  <graph defaultedgetype="directed" mode="static">
+    <attributes class="node" mode="static">
+      <attribute id="type" title="type" type="string"></attribute>
+    </attributes>
+    <nodes>
+      <node id="0.0" label="0.0">
+        <attvalues>
+          <attvalue for="type" value="A"></attvalue>
+        </attvalues>
+        <viz:size value="10.0"></viz:size>
+        <viz:position x="-26.788185" y="32.6329" z="0.0"></viz:position>
+      </node>
+      <node id="1.0" label="1.0">
+        <attvalues>
+          <attvalue for="type" value="A"></attvalue>
+        </attvalues>
+        <viz:size value="10.0"></viz:size>
+        <viz:position x="-1.3858392" y="1.5674391" z="0.0"></viz:position>
+      </node>
+      <node id="2.0" label="2.0">
+        <attvalues>
+          <attvalue for="type" value="A"></attvalue>
+        </attvalues>
+        <viz:size value="10.0"></viz:size>
+        <viz:position x="-27.949863" y="36.236004" z="0.0"></viz:position>
+      </node>
+      <node id="3.0" label="3.0">
+        <attvalues>
+          <attvalue for="type" value="A"></attvalue>
+        </attvalues>
+        <viz:size value="10.0"></viz:size>
+        <viz:position x="-36.993195" y="29.768465" z="0.0"></viz:position>
+      </node>
+      <node id="4.0" label="4.0">
+        <attvalues>
+          <attvalue for="type" value="A"></attvalue>
+        </attvalues>
+        <viz:size value="10.0"></viz:size>
+        <viz:position x="2.4312935" y="6.277625" z="0.0"></viz:position>
+      </node>
+      <node id="5.0" label="5.0">
+        <attvalues>
+          <attvalue for="type" value="B"></attvalue>
+        </attvalues>
+        <viz:size value="10.0"></viz:size>
+        <viz:position x="0.52989435" y="6.741796" z="0.0"></viz:position>
+        <viz:color r="128" g="255" b="0"></viz:color>
+      </node>
+      <node id="6.0" label="6.0">
+        <attvalues>
+          <attvalue for="type" value="B"></attvalue>
+        </attvalues>
+        <viz:size value="10.0"></viz:size>
+        <viz:position x="2.4904633" y="-2.4177384" z="0.0"></viz:position>
+        <viz:color r="128" g="255" b="0"></viz:color>
+      </node>
+      <node id="7.0" label="7.0">
+        <attvalues>
+          <attvalue for="type" value="B"></attvalue>
+        </attvalues>
+        <viz:size value="10.0"></viz:size>
+        <viz:position x="4.875578" y="-1.780199" z="0.0"></viz:position>
+        <viz:color r="128" g="255" b="0"></viz:color>
+      </node>
+      <node id="8.0" label="8.0">
+        <attvalues>
+          <attvalue for="type" value="B"></attvalue>
+        </attvalues>
+        <viz:size value="10.0"></viz:size>
+        <viz:position x="6.8845663" y="-1.1827403" z="0.0"></viz:position>
+        <viz:color r="128" g="255" b="0"></viz:color>
+      </node>
+      <node id="9.0" label="9.0">
+        <attvalues>
+          <attvalue for="type" value="B"></attvalue>
+        </attvalues>
+        <viz:size value="10.0"></viz:size>
+        <viz:position x="8.151949" y="-1.9784615" z="0.0"></viz:position>
+        <viz:color r="128" g="255" b="0"></viz:color>
+      </node>
+    </nodes>
+    <edges>
+      <edge source="0.0" target="2.0">
+        <attvalues></attvalues>
+      </edge>
+      <edge source="1.0" target="2.0">
+        <attvalues></attvalues>
+      </edge>
+      <edge source="2.0" target="3.0">
+        <attvalues></attvalues>
+      </edge>
+      <edge source="2.0" target="5.0">
+        <attvalues></attvalues>
+      </edge>
+      <edge source="3.0" target="4.0">
+        <attvalues></attvalues>
+      </edge>
+      <edge source="4.0" target="1.0">
+        <attvalues></attvalues>
+      </edge>
+      <edge source="4.0" target="5.0">
+        <attvalues></attvalues>
+      </edge>
+      <edge source="6.0" target="3.0">
+        <attvalues></attvalues>
+      </edge>
+      <edge source="6.0" target="7.0">
+        <attvalues></attvalues>
+      </edge>
+      <edge source="6.0" target="9.0">
+        <attvalues></attvalues>
+      </edge>
+      <edge source="7.0" target="8.0">
+        <attvalues></attvalues>
+      </edge>
+    </edges>
+  </graph>
+</gexf>
