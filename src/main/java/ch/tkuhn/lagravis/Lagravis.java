@@ -90,6 +90,11 @@ public class Lagravis {
 		} catch (FileNotFoundException ex) {
 			ex.printStackTrace();
 		}
+		if ("no".equals(getProperty("allow-auto-node"))) {
+			c.setAllowAutoNode(false);
+		} else if ("yes".equals(getProperty("allow-auto-node"))) {
+			c.setAllowAutoNode(true);
+		}
 		imp.process(c, new DefaultProcessor(), ws);
 		gm = Lookup.getDefault().lookup(GraphController.class).getModel();
 
