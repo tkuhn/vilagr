@@ -143,7 +143,7 @@ public class Lagravis {
 		Color[] defaultColors = new Color[] {
 			Color.BLUE, Color.RED, Color.GREEN, Color.YELLOW, Color.PINK, Color.MAGENTA, Color.ORANGE, Color.CYAN
 		};
-		Map<String,Color> colorMap = new HashMap<>();
+		Map<String,Color> colorMap = new HashMap<String,Color>();
 		for (String s : getProperty("node-colors").split(",")) {
 			if (s.isEmpty()) continue;
 			Color color = Color.decode(s.replaceFirst("^.*(#......)$", "$1"));
