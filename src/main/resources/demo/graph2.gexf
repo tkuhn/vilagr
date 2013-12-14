@@ -1,87 +1,98 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gexf xmlns="http://www.gexf.net/1.2draft" version="1.2" xmlns:viz="http://www.gexf.net/1.2draft/viz" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.gexf.net/1.2draft http://www.gexf.net/1.2draft/gexf.xsd">
-  <meta lastmodifieddate="2013-07-25">
+  <meta lastmodifieddate="2013-12-14">
     <creator>Gephi 0.8.1</creator>
     <description></description>
   </meta>
   <graph defaultedgetype="directed" mode="static">
     <attributes class="node" mode="static">
       <attribute id="type" title="type" type="string"></attribute>
+      <attribute id="number" title="number" type="string"></attribute>
     </attributes>
     <nodes>
       <node id="0.0" label="0.0">
         <attvalues>
           <attvalue for="type" value="A"></attvalue>
+          <attvalue for="number" value="12"></attvalue>
         </attvalues>
         <viz:size value="10.0"></viz:size>
-        <viz:position x="-26.788185" y="32.6329" z="0.0"></viz:position>
+        <viz:position x="-2.1050744" y="-45.231483" z="0.0"></viz:position>
       </node>
       <node id="1.0" label="1.0">
         <attvalues>
           <attvalue for="type" value="A"></attvalue>
+          <attvalue for="number" value="13"></attvalue>
         </attvalues>
         <viz:size value="10.0"></viz:size>
-        <viz:position x="-1.3858392" y="1.5674391" z="0.0"></viz:position>
+        <viz:position x="2.312268" y="-40.183212" z="0.0"></viz:position>
       </node>
       <node id="2.0" label="2.0">
         <attvalues>
           <attvalue for="type" value="A"></attvalue>
+          <attvalue for="number" value="15"></attvalue>
         </attvalues>
         <viz:size value="10.0"></viz:size>
-        <viz:position x="-27.949863" y="36.236004" z="0.0"></viz:position>
+        <viz:position x="1.6268935" y="-42.780746" z="0.0"></viz:position>
       </node>
       <node id="3.0" label="3.0">
         <attvalues>
           <attvalue for="type" value="A"></attvalue>
+          <attvalue for="number" value="19"></attvalue>
         </attvalues>
         <viz:size value="10.0"></viz:size>
-        <viz:position x="-36.993195" y="29.768465" z="0.0"></viz:position>
+        <viz:position x="-0.6749794" y="-8.397283" z="0.0"></viz:position>
       </node>
       <node id="4.0" label="4.0">
         <attvalues>
           <attvalue for="type" value="A"></attvalue>
+          <attvalue for="number" value="21"></attvalue>
         </attvalues>
         <viz:size value="10.0"></viz:size>
-        <viz:position x="2.4312935" y="6.277625" z="0.0"></viz:position>
+        <viz:position x="-107.49719" y="-122.0907" z="0.0"></viz:position>
       </node>
       <node id="5.0" label="5.0">
         <attvalues>
           <attvalue for="type" value="B"></attvalue>
+          <attvalue for="number" value="24"></attvalue>
         </attvalues>
         <viz:size value="10.0"></viz:size>
-        <viz:position x="0.52989435" y="6.741796" z="0.0"></viz:position>
+        <viz:position x="22.475922" y="128.24265" z="0.0"></viz:position>
         <viz:color r="128" g="255" b="0"></viz:color>
       </node>
       <node id="6.0" label="6.0">
         <attvalues>
           <attvalue for="type" value="B"></attvalue>
+          <attvalue for="number" value="34"></attvalue>
         </attvalues>
         <viz:size value="10.0"></viz:size>
-        <viz:position x="2.4904633" y="-2.4177384" z="0.0"></viz:position>
+        <viz:position x="-1.462374" y="-8.018533" z="0.0"></viz:position>
         <viz:color r="128" g="255" b="0"></viz:color>
       </node>
       <node id="7.0" label="7.0">
         <attvalues>
           <attvalue for="type" value="B"></attvalue>
+          <attvalue for="number" value="39"></attvalue>
         </attvalues>
         <viz:size value="10.0"></viz:size>
-        <viz:position x="4.875578" y="-1.780199" z="0.0"></viz:position>
+        <viz:position x="3.8865411" y="-13.643051" z="0.0"></viz:position>
         <viz:color r="128" g="255" b="0"></viz:color>
       </node>
       <node id="8.0" label="8.0">
         <attvalues>
           <attvalue for="type" value="B"></attvalue>
+          <attvalue for="number" value="41"></attvalue>
         </attvalues>
         <viz:size value="10.0"></viz:size>
-        <viz:position x="6.8845663" y="-1.1827403" z="0.0"></viz:position>
+        <viz:position x="407.97574" y="-6.9220886" z="0.0"></viz:position>
         <viz:color r="128" g="255" b="0"></viz:color>
       </node>
       <node id="9.0" label="9.0">
         <attvalues>
           <attvalue for="type" value="B"></attvalue>
+          <attvalue for="number" value="42"></attvalue>
         </attvalues>
         <viz:size value="10.0"></viz:size>
-        <viz:position x="8.151949" y="-1.9784615" z="0.0"></viz:position>
+        <viz:position x="150.83365" y="230.61642" z="0.0"></viz:position>
         <viz:color r="128" g="255" b="0"></viz:color>
       </node>
     </nodes>

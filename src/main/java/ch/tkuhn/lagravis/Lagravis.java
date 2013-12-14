@@ -15,8 +15,12 @@ import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeType;
+import org.gephi.filters.api.FilterController;
+import org.gephi.filters.api.Query;
+import org.gephi.filters.plugin.attribute.AttributeEqualBuilder;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.GraphView;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterator;
 import org.gephi.io.exporter.api.ExportController;
@@ -98,6 +102,21 @@ public class Lagravis {
 		imp.process(c, new DefaultProcessor(), ws);
 		gm = Lookup.getDefault().lookup(GraphController.class).getModel();
 
+		String filterProp = getProperty("filter");
+		if (filterProp != null) {
+			String filterCol = filterProp.split("#")[0];
+			FilterController fc = Lookup.getDefault().lookup(FilterController.class);
+			AttributeColumn ac = getAttributeColumn(filterCol, AttributeType.STRING);
+			AttributeEqualBuilder.EqualStringFilter filter =
+					new AttributeEqualBuilder.EqualStringFilter(ac);
+			filter.init(gm.getGraph());
+			filter.setPattern(filterProp.split("#")[1]);
+			filter.setUseRegex(true);
+			Query query = fc.createQuery(filter);
+			GraphView view = fc.filter(query);
+			gm.setVisibleView(view);
+		}
+
 		PreviewModel model = Lookup.getDefault().lookup(PreviewController.class).getModel();
 		PreviewProperties props = model.getProperties();
 		props.putValue(PreviewProperty.EDGE_CURVED, false);
@@ -129,14 +148,7 @@ public class Lagravis {
 			layout.endAlgo();
 		}
 
-		AttributeModel attributeModelLocal = Lookup.getDefault().lookup(AttributeController.class).getModel();
-		AttributeTable nodeTable = attributeModelLocal.getNodeTable();
-		AttributeColumn col;
-		String typeCol = getProperty("type-column");
-		col = nodeTable.getColumn(typeCol);
-		if (col == null) {
-			col = nodeTable.addColumn(typeCol, AttributeType.STRING);
-		}
+		AttributeColumn col = getAttributeColumn(getProperty("type-column"), AttributeType.STRING);
 		PartitionController partitionController = Lookup.getDefault().lookup(PartitionController.class);
 		Partition p = partitionController.buildPartition(col, gm.getGraph());
 		NodeColorTransformer transform = new NodeColorTransformer();
@@ -217,6 +229,16 @@ public class Lagravis {
 			return n.getNodeData().getSize();
 		}
 		return 10.0f;
+	}
+
+	private AttributeColumn getAttributeColumn(String name, AttributeType type) {
+		AttributeModel attributeModelLocal = Lookup.getDefault().lookup(AttributeController.class).getModel();
+		AttributeTable nodeTable = attributeModelLocal.getNodeTable();
+		AttributeColumn col = nodeTable.getColumn(name);
+		if (col == null) {
+			col = nodeTable.addColumn(name, type);
+		}
+		return col;
 	}
 
 }
