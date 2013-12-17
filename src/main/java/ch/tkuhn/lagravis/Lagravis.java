@@ -135,6 +135,7 @@ public class Lagravis {
 			OpenOrdLayoutBuilder b = new OpenOrdLayoutBuilder();
 			OpenOrdLayout layout = (OpenOrdLayout) b.buildLayout();
 			layout.resetPropertiesValues();
+			layout.setRandSeed(new Long(getProperty("random-seed")));
 			layout.setLiquidStage(new Integer(getProperty("liquid-stage")));
 			layout.setExpansionStage(new Integer(getProperty("expansion-stage")));
 			layout.setCooldownStage(new Integer(getProperty("cooldown-stage")));
