@@ -1,4 +1,4 @@
-package ch.tkuhn.lagravis;
+package ch.tkuhn.vilagr;
 
 import java.awt.Color;
 import java.io.File;
@@ -43,13 +43,13 @@ import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.openide.util.Lookup;
 
-public class Lagravis {
+public class Vilagr {
 
 	private static Properties defaultProperties;
 
 	static {
 		defaultProperties = new Properties();
-		InputStream in = Lagravis.class.getResourceAsStream("default.properties");
+		InputStream in = Vilagr.class.getResourceAsStream("default.properties");
 		try {
 			defaultProperties.load(in);
 		} catch (IOException ex) {
@@ -65,16 +65,16 @@ public class Lagravis {
 		if (args.length != 1) {
 			throw new IllegalArgumentException("Exactly one argument expected: properties file");
 		}
-		Lagravis lagravis = new Lagravis(new File(args[0]));
-		lagravis.run();
+		Vilagr vilagr = new Vilagr(new File(args[0]));
+		vilagr.run();
 	}
 
-	public Lagravis(Properties properties, File dir) {
+	public Vilagr(Properties properties, File dir) {
 		this.properties = properties;
 		this.dir = dir;
 	}
 
-	public Lagravis(File propertiesFile) throws IOException {
+	public Vilagr(File propertiesFile) throws IOException {
 		properties = new Properties();
 		properties.load(new FileInputStream(propertiesFile));
 		dir = propertiesFile.getParentFile();

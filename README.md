@@ -1,5 +1,5 @@
-lagravis
-========
+vilagr
+======
 
 Large graph visualization based on Gephi.
 
@@ -35,7 +35,7 @@ Build
 
 Run from sources:
 
-    scripts/Lagravis.sh params.properties
+    scripts/Vilagr.sh params.properties
 
 Create single jar file that includes all dependencies:
 
