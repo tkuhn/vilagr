@@ -27,6 +27,9 @@ public class GraphDrawer {
 	// - getImage
 
 	public void finishEdgeDrawing() {
+		if (edgeMap == null) {
+			throw new RuntimeException("Edge drawing already finished");
+		}
 		image = new BufferedImage(size, size, BufferedImage.TYPE_INT_RGB);
 		graphics = image.getGraphics();
 		for (int x = 0 ; x < size ; x++) {
@@ -41,6 +44,9 @@ public class GraphDrawer {
 	}
 
 	public void recordEdge(int x1, int y1, int x2, int y2) {
+		if (edgeMap == null) {
+			throw new RuntimeException("Cannot record edges after edge drawing is finished");
+		}
 		if (Math.abs(x2 - x1) > Math.abs(y2 - y1)) {
 			if (x1 > x2) {
 				int tx1 = x1;
@@ -69,11 +75,15 @@ public class GraphDrawer {
 	}
 
 	private void recordEdgePixel(int x, int y) {
+		if (x < 0 || y < 0 || x >= size || y >= size) return;
 		float v = edgeMap[x][y];
 		edgeMap[x][y] = (float) (v + edgeAlpha - v * edgeAlpha);
 	}
 
 	public void drawNode(int x, int y, Color color) {
+		if (edgeMap != null) {
+			throw new RuntimeException("Edge drawing is not yet finished");
+		}
 		graphics.setColor(color);
 		graphics.fillOval((int) (x - nodeSize/2.0), (int) (y - nodeSize/2.0), nodeSize, nodeSize);
 	}
