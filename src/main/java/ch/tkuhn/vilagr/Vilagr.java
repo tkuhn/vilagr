@@ -80,8 +80,16 @@ public class Vilagr {
 		dir = propertiesFile.getParentFile();
 	}
 
-	@SuppressWarnings("rawtypes")
 	public void run() {
+		if ("gephi".equals(getMode())) {
+			runGephi();
+		} else {
+			throw new RuntimeException("Unknown mode: " + getMode());
+		}
+	}
+
+	@SuppressWarnings("rawtypes")
+	public void runGephi() {
 		File inputFile = new File(dir, getProperty("input-file"));
 
 		ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
@@ -220,6 +228,10 @@ public class Vilagr {
 		String value = properties.getProperty(key);
 		if (value != null) return value;
 		return defaultProperties.getProperty(key);
+	}
+
+	public String getMode() {
+		return getProperty("mode");
 	}
 
 	private float getNodeSize() {
