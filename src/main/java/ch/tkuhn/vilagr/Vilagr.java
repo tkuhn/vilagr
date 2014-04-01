@@ -191,10 +191,10 @@ public class Vilagr {
 
 		for (String s : getProperty("output-formats").split(",")) {
 			if (s.isEmpty()) continue;
-			if (s.matches("png[0-9]*")) {
+			if (s.equals("png")) {
 				int size = 1000;
-				if (s.length() > 3) {
-					size = new Integer(s.substring(3));
+				if (getProperty("output-size") != null) {
+					size = new Integer(getProperty("output-size"));
 				}
 				PNGExporter pngexp = (PNGExporter) ec.getExporter("png");
 				pngexp.setHeight(size);
