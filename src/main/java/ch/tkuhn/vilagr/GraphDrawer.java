@@ -8,6 +8,9 @@ import java.awt.image.BufferedImage;
 public class GraphDrawer {
 
 	private int size;
+	private float offset = 0.0f;
+	private float scale = 1.0f;
+	private boolean yAxisBottomUp = false;
 	private float edgeAlpha = 0.01f;
 	private int nodeSize = 4;
 	private float[][] edgeMap;
@@ -74,6 +77,18 @@ public class GraphDrawer {
 		}
 	}
 
+	public void recordEdge(float preX1, float preY1, float preX2, float preY2) {
+		int x1 = (int) ( (preX1-offset) * scale );
+		int y1 = (int) ( (preY1-offset) * scale );
+		int x2 = (int) ( (preX2-offset) * scale );
+		int y2 = (int) ( (preY2-offset) * scale );
+		if (yAxisBottomUp) {
+			y1 = size - y1;
+			y2 = size - y2;
+		}
+		recordEdge(x1, y1, x2, y2);
+	}
+
 	private void recordEdgePixel(int x, int y) {
 		if (x < 0 || y < 0 || x >= size || y >= size) return;
 		float v = edgeMap[x][y];
@@ -88,12 +103,27 @@ public class GraphDrawer {
 		graphics.fillOval((int) (x - nodeSize/2.0), (int) (y - nodeSize/2.0), nodeSize, nodeSize);
 	}
 
+	public void drawNode(float preX, float preY, Color color) {
+		int x = (int) ( (preX-offset) * scale );
+		int y = (int) ( (preY-offset) * scale );
+		if (yAxisBottomUp) {
+			y = size - y;
+		}
+		drawNode(x, y, color);
+	}
+
 	public void setEdgeAlpha(float edgeAlpha) {
 		this.edgeAlpha = edgeAlpha;
 	}
 
 	public void setNodeSize(int nodeSize) {
 		this.nodeSize = nodeSize;
+	}
+
+	public void setTransformation(float offset, float scale, boolean yAxisBottomUp) {
+		this.offset = offset;
+		this.scale = scale;
+		this.yAxisBottomUp = yAxisBottomUp;
 	}
 
 	public BufferedImage getImage() {
