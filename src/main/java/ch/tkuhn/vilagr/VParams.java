@@ -132,8 +132,9 @@ public class VParams {
 			colorMap = new HashMap<String,Color>();
 			for (String s : get("node-colors").split(",")) {
 				if (s.isEmpty()) continue;
-				Color color = Color.decode(s.replaceFirst("^.*(#......)$", "$1"));
-				colorMap.put(s.replaceFirst("^(.*)#......$", "$1"), color);
+				Color c = Color.decode(s.replaceFirst("^.*(#......)$", "$1"));
+				c = new Color(c.getRed(), c.getGreen(), c.getBlue(), (int) (getNodeOpacity() * 255));
+				colorMap.put(s.replaceFirst("^(.*)#......$", "$1"), c);
 			}
 		}
 		return colorMap.get(type);

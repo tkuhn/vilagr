@@ -58,7 +58,7 @@ public class VRenderEngine implements VilagrEngine {
 			public void handleCoord(String nodeId, String type, float x, float y) throws Exception {
 				pointsX.put(nodeId, x);
 				pointsY.put(nodeId, y);
-				types.put(nodeId, type);
+				types.put(nodeId, type.intern());
 			}
 
 		});
@@ -68,7 +68,7 @@ public class VRenderEngine implements VilagrEngine {
 	private void drawEdges() {
 		log("Drawing edges...");
 		EdgeIterator ei = new EdgeIterator(params.getInputFile(), new EdgeIterator.EdgeHandler() {
-			
+
 			@Override
 			public void handleEdge(String nodeId1, String nodeId2) throws Exception {
 				if (!pointsX.containsKey(nodeId1) || !pointsX.containsKey(nodeId2)) return;
