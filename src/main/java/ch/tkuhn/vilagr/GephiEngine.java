@@ -41,40 +41,41 @@ import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.openide.util.Lookup;
 
-public class GephiEngine {
+public class GephiEngine implements VilagrEngine {
 
-	private Properties properties;
-	private File dir;
+	private VParams params;
 	private GraphModel gm;
 
 	public GephiEngine(Properties properties, File dir) {
-		this.properties = properties;
-		this.dir = dir;
+		params = new VParams(properties, dir);
 	}
 
+	public GephiEngine(VParams params) {
+		this.params = params;
+	}
+
+	@Override
 	@SuppressWarnings("rawtypes")
 	public void run() {
-		File inputFile = new File(dir, getProperty("input-file"));
-
 		ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
 		pc.newProject();
 		Workspace ws = pc.getCurrentWorkspace();
 		ImportController imp = Lookup.getDefault().lookup(ImportController.class);
 		Container c = null;
 		try {
-			c = imp.importFile(inputFile);
+			c = imp.importFile(params.getInputFile());
 		} catch (FileNotFoundException ex) {
 			ex.printStackTrace();
 		}
-		if ("no".equals(getProperty("allow-auto-node"))) {
+		if ("no".equals(params.get("allow-auto-node"))) {
 			c.setAllowAutoNode(false);
-		} else if ("yes".equals(getProperty("allow-auto-node"))) {
+		} else if ("yes".equals(params.get("allow-auto-node"))) {
 			c.setAllowAutoNode(true);
 		}
 		imp.process(c, new DefaultProcessor(), ws);
 		gm = Lookup.getDefault().lookup(GraphController.class).getModel();
 
-		String filterProp = getProperty("filter");
+		String filterProp = params.get("filter");
 		if (filterProp != null) {
 			String filterCol = filterProp.split("#")[0];
 			FilterController fc = Lookup.getDefault().lookup(FilterController.class);
@@ -94,25 +95,24 @@ public class GephiEngine {
 		props.putValue(PreviewProperty.EDGE_CURVED, false);
 		props.putValue(PreviewProperty.ARROW_SIZE, 0);
 		props.putValue(PreviewProperty.NODE_BORDER_WIDTH, 0);
-		Color edgeColor = Color.decode(getProperty("edge-color"));
-		props.putValue(PreviewProperty.EDGE_COLOR, new EdgeColor(edgeColor));
-		props.putValue(PreviewProperty.EDGE_OPACITY, new Float(getProperty("edge-opacity")) * 100);
-		props.putValue(PreviewProperty.NODE_OPACITY, new Float(getProperty("node-opacity")) * 100);
+		props.putValue(PreviewProperty.EDGE_COLOR, new EdgeColor(params.getEdgeColor()));
+		props.putValue(PreviewProperty.EDGE_OPACITY, params.getEdgeOpacity() * 100);
+		props.putValue(PreviewProperty.NODE_OPACITY, params.getNodeOpacity() * 100);
 
 		// Normalize edge thickness by node size:
-		float edgeThickness = new Float(getProperty("edge-thickness")) * (getNodeSize() / 10.0f);
+		float edgeThickness = params.getEdgeThickness() * (getNodeSize() / 10.0f);
 		props.putValue(PreviewProperty.EDGE_THICKNESS, edgeThickness);
 
-		if (!getProperty("do-layout").equals("no")) {
+		if (params.doLayout()) {
 			OpenOrdLayoutBuilder b = new OpenOrdLayoutBuilder();
 			OpenOrdLayout layout = (OpenOrdLayout) b.buildLayout();
 			layout.resetPropertiesValues();
-			layout.setRandSeed(new Long(getProperty("random-seed")));
-			layout.setLiquidStage(new Integer(getProperty("liquid-stage")));
-			layout.setExpansionStage(new Integer(getProperty("expansion-stage")));
-			layout.setCooldownStage(new Integer(getProperty("cooldown-stage")));
-			layout.setCrunchStage(new Integer(getProperty("crunch-stage")));
-			layout.setSimmerStage(new Integer(getProperty("simmer-stage")));
+			layout.setRandSeed(params.getRandomSeed());
+			layout.setLiquidStage(params.getInt("liquid-stage"));
+			layout.setExpansionStage(params.getInt("expansion-stage"));
+			layout.setCooldownStage(params.getInt("cooldown-stage"));
+			layout.setCrunchStage(params.getInt("crunch-stage"));
+			layout.setSimmerStage(params.getInt("simmer-stage"));
 			layout.setGraphModel(gm);
 			layout.initAlgo();
 			while (layout.canAlgo()) {
@@ -121,7 +121,7 @@ public class GephiEngine {
 			layout.endAlgo();
 		}
 
-		AttributeColumn col = getAttributeColumn(getProperty("type-column"), AttributeType.STRING);
+		AttributeColumn col = getAttributeColumn(params.get("type-column"), AttributeType.STRING);
 		PartitionController partitionController = Lookup.getDefault().lookup(PartitionController.class);
 		Partition p = partitionController.buildPartition(col, gm.getGraph());
 		NodeColorTransformer transform = new NodeColorTransformer();
@@ -129,7 +129,7 @@ public class GephiEngine {
 			Color.BLUE, Color.RED, Color.GREEN, Color.YELLOW, Color.PINK, Color.MAGENTA, Color.ORANGE, Color.CYAN
 		};
 		Map<String,Color> colorMap = new HashMap<String,Color>();
-		for (String s : getProperty("node-colors").split(",")) {
+		for (String s : params.get("node-colors").split(",")) {
 			if (s.isEmpty()) continue;
 			Color color = Color.decode(s.replaceFirst("^.*(#......)$", "$1"));
 			colorMap.put(s.replaceFirst("^(.*)#......$", "$1"), color);
@@ -155,31 +155,24 @@ public class GephiEngine {
 		partitionController.transform(p, transform);
 
 		ExportController ec = Lookup.getDefault().lookup(ExportController.class);
-		String outputName = getProperty("output-file");
-		if (outputName.isEmpty()) {
-			outputName = inputFile.getName().replaceFirst("[.][^.]+$", "");
-			if (outputName.isEmpty()) outputName = "out";
-		}
+		String outputName = params.getOutputFileName();
 
-		for (String s : getProperty("output-formats").split(",")) {
+		for (String s : params.getOutputFormats()) {
 			if (s.isEmpty()) continue;
 			if (s.equals("png")) {
-				int size = 1000;
-				if (getProperty("output-size") != null) {
-					size = new Integer(getProperty("output-size"));
-				}
+				int size = params.getOutputSize();
 				PNGExporter pngexp = (PNGExporter) ec.getExporter("png");
 				pngexp.setHeight(size);
 				pngexp.setWidth(size);
 				pngexp.setWorkspace(ws);
 				try {
-					ec.exportFile(new File(dir, outputName + ".png"), pngexp);
+					ec.exportFile(new File(params.getDir(), outputName + ".png"), pngexp);
 				} catch (IOException ex) {
 					ex.printStackTrace();
 				}
 			} else {
 				try {
-					ec.exportFile(new File(dir, outputName + "." + s));
+					ec.exportFile(new File(params.getDir(), outputName + "." + s));
 				} catch (IOException ex) {
 					ex.printStackTrace();
 				}
@@ -206,13 +199,6 @@ public class GephiEngine {
 			col = nodeTable.addColumn(name, type);
 		}
 		return col;
-	}
-
-	private String getProperty(String key) {
-		if (properties.containsKey(key)) {
-			return properties.getProperty(key).toString();
-		}
-		return null;
 	}
 
 }

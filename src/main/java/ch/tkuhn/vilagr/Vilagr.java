@@ -1,27 +1,10 @@
 package ch.tkuhn.vilagr;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Properties;
 
 public class Vilagr {
-
-	private static Properties defaultProperties;
-
-	static {
-		defaultProperties = new Properties();
-		InputStream in = Vilagr.class.getResourceAsStream("default.properties");
-		try {
-			defaultProperties.load(in);
-		} catch (IOException ex) {
-			ex.printStackTrace();
-		}
-	}
-
-	private Properties properties = new Properties();
-	private File dir;
 
 	public static void main(String[] args) throws IOException {
 		if (args.length != 1) {
@@ -31,37 +14,31 @@ public class Vilagr {
 		vilagr.run();
 	}
 
+	private VParams params;
+
 	public Vilagr(Properties properties, File dir) {
-		loadDefaultProperties();
-		this.properties.putAll(properties);
-		this.dir = dir;
+		params = new VParams(properties, dir);
 	}
 
 	public Vilagr(File propertiesFile) throws IOException {
-		loadDefaultProperties();
-		Properties specificProps = new Properties();
-		specificProps.load(new FileInputStream(propertiesFile));
-		properties.putAll(specificProps);
-		dir = propertiesFile.getParentFile();
+		params = new VParams(propertiesFile);
 	}
 
-	private void loadDefaultProperties() {
-		properties = new Properties();
-		properties.putAll(defaultProperties);
+	public Vilagr(VParams params) {
+		this.params = params;
 	}
 
 	public void run() {
-		String engineId = getProperty("engine");
+		String engineId = params.get("engine").toLowerCase();
+		VilagrEngine engine;
 		if ("gephi".equals(engineId)) {
-			GephiEngine engine = new GephiEngine(properties, dir);
-			engine.run();
+			engine = new GephiEngine(params);
+		} else if ("vrender".equals(engineId)) {
+			engine = new VRenderEngine(params);
 		} else {
 			throw new RuntimeException("Unknown engine: " + engineId);
 		}
-	}
-
-	private String getProperty(String key) {
-		return properties.getProperty(key).toString();
+		engine.run();
 	}
 
 }

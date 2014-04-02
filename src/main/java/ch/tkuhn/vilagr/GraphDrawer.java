@@ -78,10 +78,10 @@ public class GraphDrawer {
 	}
 
 	public void recordEdge(float preX1, float preY1, float preX2, float preY2) {
-		int x1 = (int) ( (preX1-offset) * scale );
-		int y1 = (int) ( (preY1-offset) * scale );
-		int x2 = (int) ( (preX2-offset) * scale );
-		int y2 = (int) ( (preY2-offset) * scale );
+		int x1 = (int) ( (preX1+offset) * scale );
+		int y1 = (int) ( (preY1+offset) * scale );
+		int x2 = (int) ( (preX2+offset) * scale );
+		int y2 = (int) ( (preY2+offset) * scale );
 		if (yAxisBottomUp) {
 			y1 = size - y1;
 			y2 = size - y2;
@@ -104,8 +104,8 @@ public class GraphDrawer {
 	}
 
 	public void drawNode(float preX, float preY, Color color) {
-		int x = (int) ( (preX-offset) * scale );
-		int y = (int) ( (preY-offset) * scale );
+		int x = (int) ( (preX+offset) * scale );
+		int y = (int) ( (preY+offset) * scale );
 		if (yAxisBottomUp) {
 			y = size - y;
 		}
