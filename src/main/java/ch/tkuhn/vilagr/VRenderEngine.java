@@ -51,7 +51,8 @@ public class VRenderEngine implements VilagrEngine {
 
 	private void readNodes() {
 		log("Reading nodes...");
-		CoordIterator ci = new CoordIterator(params.getInputFile(), new CoordIterator.CoordHandler() {
+		CoordIterator ci = new CoordIterator(params.getInputFile(), params.getTypeColumn(),
+				new CoordIterator.CoordHandler() {
 			
 			@Override
 			public void handleCoord(String nodeId, String type, float x, float y) throws Exception {

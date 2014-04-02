@@ -30,8 +30,8 @@ public class CoordIterator {
 
 	public CoordIterator(File file, String typeColumn, CoordHandler handler) {
 		this.file = file;
-		this.handler = handler;
 		this.typeColumn = typeColumn;
+		this.handler = handler;
 	}
 
 	public CoordIterator(File file, CoordHandler handler) {
@@ -77,7 +77,10 @@ public class CoordIterator {
 
 	private void processGexf() throws IOException {
 		BufferedReader reader = new BufferedReader(new FileReader(file), 64*1024);
-		String spTypePattern = typePattern.replace("<TYPE>", typeColumn);
+		String spTypePattern = null;
+		if (typeColumn != null) {
+			spTypePattern = typePattern.replace("<TYPE>", typeColumn);
+		}
 		String line;
 		String type = null;
 		String nodeId = null;
@@ -88,7 +91,7 @@ public class CoordIterator {
 					throw new RuntimeException("No coordinates found for: " + nodeId);
 				}
 				nodeId = line.replaceFirst(idPattern, "$1");
-			} else if (line.matches(spTypePattern)) {
+			} else if (spTypePattern != null && line.matches(spTypePattern)) {
 				type = line.replaceFirst(typePattern, "$1");
 			} else if (line.matches(coordPattern)) {
 				if (nodeId == null) {
