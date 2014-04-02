@@ -15,6 +15,7 @@ public class VRenderEngine implements VilagrEngine {
 	private GraphDrawer graphDrawer;
 	private Map<String,Float> pointsX;
 	private Map<String,Float> pointsY;
+	private Map<String,String> types;
 
 	public VRenderEngine(Properties properties, File dir) {
 		params = new VParams(properties, dir);
@@ -33,6 +34,7 @@ public class VRenderEngine implements VilagrEngine {
 		graphDrawer.setNodeSize(params.getInt("node-size"));
 		pointsX = new HashMap<String,Float>();
 		pointsY = new HashMap<String,Float>();
+		types = new HashMap<String,String>();
 	}
 
 	@Override
@@ -52,9 +54,10 @@ public class VRenderEngine implements VilagrEngine {
 		CoordIterator ci = new CoordIterator(params.getInputFile(), new CoordIterator.CoordHandler() {
 			
 			@Override
-			public void handleCoord(String nodeId, float x, float y) throws Exception {
+			public void handleCoord(String nodeId, String type, float x, float y) throws Exception {
 				pointsX.put(nodeId, x);
 				pointsY.put(nodeId, y);
+				types.put(nodeId, type);
 			}
 
 		});
@@ -82,9 +85,14 @@ public class VRenderEngine implements VilagrEngine {
 
 	private void drawNodes() {
 		log("Drawing nodes...");
-		Color color = new Color(0, 0, 255, (int) (params.getNodeOpacity() * 255));
+		Color baseColor = new Color(0, 0, 255, (int) (params.getNodeOpacity() * 255));
 		for (String id : pointsX.keySet()) {
-			// TODO allow for setting different colors
+			Color color;
+			if (types.containsKey(id)) {
+				color = params.getTypeColor(types.get(id));
+			} else {
+				color = baseColor;
+			}
 			graphDrawer.drawNode(pointsX.get(id), pointsY.get(id), color);
 		}
 	}

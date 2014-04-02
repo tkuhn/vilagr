@@ -64,7 +64,7 @@ public class EdgeIterator {
 	}
 
 
-	private static final String edgePattern = "^\\s*<edge.* source=\"(.*?)\".* target=\"(.*?)\".*$";
+	private static final String edgePattern = "^\\s*<edge.*? source=\"(.*?)\".*? target=\"(.*?)\".*$";
 
 	private void processGexf() throws IOException {
 		BufferedReader reader = new BufferedReader(new FileReader(file), 64*1024);

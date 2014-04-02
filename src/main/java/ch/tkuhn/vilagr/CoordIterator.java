@@ -14,7 +14,7 @@ public class CoordIterator {
 
 	public static interface CoordHandler {
 
-		public void handleCoord(String nodeId, float x, float y) throws Exception;
+		public void handleCoord(String nodeId, String type, float x, float y) throws Exception;
 
 	}
 
@@ -26,10 +26,16 @@ public class CoordIterator {
 
 	private File file;
 	private CoordHandler handler;
+	private String typeColumn;
 
-	public CoordIterator(File file, CoordHandler handler) {
+	public CoordIterator(File file, String typeColumn, CoordHandler handler) {
 		this.file = file;
 		this.handler = handler;
+		this.typeColumn = typeColumn;
+	}
+
+	public CoordIterator(File file, CoordHandler handler) {
+		this(file, null, handler);
 	}
 
 	public void run() {
@@ -55,7 +61,7 @@ public class CoordIterator {
 			float x = Float.parseFloat(line.get(1));
 			float y = Float.parseFloat(line.get(2));
 			try {
-				handler.handleCoord(nodeId, x, y);
+				handler.handleCoord(nodeId, null, x, y);
 			} catch (Exception ex) {
 				ex.printStackTrace();
 				break;
@@ -66,11 +72,14 @@ public class CoordIterator {
 
 
 	private static final String idPattern = "^\\s*<node id=\"(.*?)\".*$";
+	private static final String typePattern = "^\\s*<attvalue.*? for=\"<TYPE>\".*? value=\"(.*?)\".*$";
 	private static final String coordPattern = "^\\s*<viz:position x=\"(.*?)\" y=\"(.*?)\".*$";
 
 	private void processGexf() throws IOException {
 		BufferedReader reader = new BufferedReader(new FileReader(file), 64*1024);
+		String spTypePattern = typePattern.replace("<TYPE>", typeColumn);
 		String line;
+		String type = null;
 		String nodeId = null;
 		while ((line = reader.readLine()) != null) {
 			if (line.matches(idPattern)) {
@@ -79,6 +88,8 @@ public class CoordIterator {
 					throw new RuntimeException("No coordinates found for: " + nodeId);
 				}
 				nodeId = line.replaceFirst(idPattern, "$1");
+			} else if (line.matches(spTypePattern)) {
+				type = line.replaceFirst(typePattern, "$1");
 			} else if (line.matches(coordPattern)) {
 				if (nodeId == null) {
 					reader.close();
@@ -87,12 +98,13 @@ public class CoordIterator {
 					float x = Float.parseFloat(line.replaceFirst(coordPattern, "$1"));
 					float y = Float.parseFloat(line.replaceFirst(coordPattern, "$2"));
 					try {
-						handler.handleCoord(nodeId, x, y);
+						handler.handleCoord(nodeId, type, x, y);
 					} catch (Exception ex) {
 						ex.printStackTrace();
 						break;
 					}
 					nodeId = null;
+					type = null;
 				}
 			}
 		}
