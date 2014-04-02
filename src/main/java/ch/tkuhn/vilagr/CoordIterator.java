@@ -92,7 +92,7 @@ public class CoordIterator {
 				}
 				nodeId = line.replaceFirst(idPattern, "$1");
 			} else if (spTypePattern != null && line.matches(spTypePattern)) {
-				type = line.replaceFirst(typePattern, "$1");
+				type = line.replaceFirst(spTypePattern, "$1");
 			} else if (line.matches(coordPattern)) {
 				if (nodeId == null) {
 					reader.close();
