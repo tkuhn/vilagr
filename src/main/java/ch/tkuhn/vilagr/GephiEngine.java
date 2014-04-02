@@ -4,8 +4,6 @@ import java.awt.Color;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 
 import org.gephi.data.attributes.api.AttributeColumn;
@@ -121,19 +119,13 @@ public class GephiEngine implements VilagrEngine {
 			layout.endAlgo();
 		}
 
-		AttributeColumn col = getAttributeColumn(params.get("type-column"), AttributeType.STRING);
+		AttributeColumn col = getAttributeColumn(params.getTypeColumn(), AttributeType.STRING);
 		PartitionController partitionController = Lookup.getDefault().lookup(PartitionController.class);
 		Partition p = partitionController.buildPartition(col, gm.getGraph());
 		NodeColorTransformer transform = new NodeColorTransformer();
 		Color[] defaultColors = new Color[] {
 			Color.BLUE, Color.RED, Color.GREEN, Color.YELLOW, Color.PINK, Color.MAGENTA, Color.ORANGE, Color.CYAN
 		};
-		Map<String,Color> colorMap = new HashMap<String,Color>();
-		for (String s : params.get("node-colors").split(",")) {
-			if (s.isEmpty()) continue;
-			Color color = Color.decode(s.replaceFirst("^.*(#......)$", "$1"));
-			colorMap.put(s.replaceFirst("^(.*)#......$", "$1"), color);
-		}
 
 		int i = 0;
 		System.out.println("Color codes:");
@@ -144,9 +136,9 @@ public class GephiEngine implements VilagrEngine {
 			} else {
 				v = part.getValue().toString();
 			}
-			Color color = defaultColors[i];
-			if (colorMap.containsKey(v)) {
-				color = colorMap.get(v);
+			Color color = params.getTypeColor(v);
+			if (color == null) {
+				color = defaultColors[i];
 			}
 			transform.getMap().put(part.getValue(), color);
 			System.out.println(String.format("#%06X", (0xFFFFFF & color.getRGB())) + " " + v);

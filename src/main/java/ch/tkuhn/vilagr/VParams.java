@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 public class VParams {
@@ -23,6 +25,7 @@ public class VParams {
 
 	private Properties properties = new Properties();
 	private File dir;
+	private Map<String,Color> colorMap;
 
 	public VParams(Properties properties, File dir) {
 		loadDefaultProperties();
@@ -118,6 +121,22 @@ public class VParams {
 			if (outputName.isEmpty()) outputName = "out";
 		}
 		return outputName;
+	}
+
+	public String getTypeColumn() {
+		return get("type-column");
+	}
+
+	public Color getTypeColor(String type) {
+		if (colorMap == null) {
+			colorMap = new HashMap<String,Color>();
+			for (String s : get("node-colors").split(",")) {
+				if (s.isEmpty()) continue;
+				Color color = Color.decode(s.replaceFirst("^.*(#......)$", "$1"));
+				colorMap.put(s.replaceFirst("^(.*)#......$", "$1"), color);
+			}
+		}
+		return colorMap.get(type);
 	}
 
 }
