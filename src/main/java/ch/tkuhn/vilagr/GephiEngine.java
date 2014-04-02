@@ -96,8 +96,8 @@ public class GephiEngine {
 		props.putValue(PreviewProperty.NODE_BORDER_WIDTH, 0);
 		Color edgeColor = Color.decode(getProperty("edge-color"));
 		props.putValue(PreviewProperty.EDGE_COLOR, new EdgeColor(edgeColor));
-		props.putValue(PreviewProperty.EDGE_OPACITY, new Float(getProperty("edge-opacity")));
-		props.putValue(PreviewProperty.NODE_OPACITY, new Float(getProperty("node-opacity")));
+		props.putValue(PreviewProperty.EDGE_OPACITY, new Float(getProperty("edge-opacity")) * 100);
+		props.putValue(PreviewProperty.NODE_OPACITY, new Float(getProperty("node-opacity")) * 100);
 
 		// Normalize edge thickness by node size:
 		float edgeThickness = new Float(getProperty("edge-thickness")) * (getNodeSize() / 10.0f);
