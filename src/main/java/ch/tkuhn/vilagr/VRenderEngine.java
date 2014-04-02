@@ -47,16 +47,12 @@ public class VRenderEngine implements VilagrEngine {
 		}
 	}
 
-	private int count = 0;
-
 	private void readNodes() {
 		log("Reading nodes...");
 		CoordIterator ci = new CoordIterator(params.getInputFile(), new CoordIterator.CoordHandler() {
 			
 			@Override
 			public void handleCoord(String nodeId, float x, float y) throws Exception {
-				count++;
-				if (count > 50000) return;
 				pointsX.put(nodeId, x);
 				pointsY.put(nodeId, y);
 			}
