@@ -106,7 +106,11 @@ public class VRenderEngine implements VilagrEngine {
 	private void drawNodes() {
 		log("Drawing nodes...");
 		Color baseColor = new Color(95, 95, 95, (int) (params.getNodeOpacity() * 255));
-		String[] atts = params.getAttributePattern().split("\\|");
+		String[] atts = new String[] {};
+		String attPattern = params.getAttributePattern();
+		if (attPattern != null) {
+			atts = attPattern.split("\\|");
+		}
 		for (String id : pointsX.keySet()) {
 			if (connected != null && !connected.containsKey(id)) {
 				// ignore isolates
