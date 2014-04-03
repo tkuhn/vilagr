@@ -16,6 +16,7 @@ public class VRenderEngine implements VilagrEngine {
 	private Map<String,Float> pointsX;
 	private Map<String,Float> pointsY;
 	private Map<String,String> types;
+	private Map<String,Boolean> connected;
 
 	public VRenderEngine(Properties properties, File dir) {
 		params = new VParams(properties, dir);
@@ -35,6 +36,9 @@ public class VRenderEngine implements VilagrEngine {
 		pointsX = new HashMap<String,Float>();
 		pointsY = new HashMap<String,Float>();
 		types = new HashMap<String,String>();
+		if (params.getBoolean("ignore-isolates")) {
+			connected = new HashMap<String,Boolean>();
+		}
 	}
 
 	@Override
@@ -77,6 +81,10 @@ public class VRenderEngine implements VilagrEngine {
 				float x2 = pointsX.get(nodeId2);
 				float y2 = pointsY.get(nodeId2);
 				graphDrawer.recordEdge(x1, y1, x2, y2);
+				if (connected != null) {
+					connected.put(nodeId1, true);
+					connected.put(nodeId2, true);
+				}
 			}
 
 		});
@@ -88,6 +96,10 @@ public class VRenderEngine implements VilagrEngine {
 		log("Drawing nodes...");
 		Color baseColor = new Color(0, 0, 255, (int) (params.getNodeOpacity() * 255));
 		for (String id : pointsX.keySet()) {
+			if (connected != null && !connected.get(id)) {
+				// ignore isolates
+				continue;
+			}
 			Color color;
 			if (types.containsKey(id)) {
 				color = params.getTypeColor(types.get(id));
