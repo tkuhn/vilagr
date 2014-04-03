@@ -56,8 +56,12 @@ public class VRenderEngine implements VilagrEngine {
 	}
 
 	private void readNodes() {
+		String tc = params.getTypeColumn();
+		String ap = params.getAttributePattern();
+		log("Type column: " + tc);
+		log("Attribute pattern: " + ap);
 		log("Reading nodes...");
-		CoordIterator ci = new CoordIterator(params.getInputFile(), params.getTypeColumn(), params.getAttributePattern(),
+		CoordIterator ci = new CoordIterator(params.getInputFile(), tc, ap,
 				new CoordIterator.CoordHandler() {
 			
 			@Override
@@ -101,7 +105,7 @@ public class VRenderEngine implements VilagrEngine {
 
 	private void drawNodes() {
 		log("Drawing nodes...");
-		Color baseColor = new Color(128, 128, 128, (int) (params.getNodeOpacity() * 255));
+		Color baseColor = new Color(63, 63, 63, (int) (params.getNodeOpacity() * 255));
 		String[] atts = params.getAttributePattern().split("\\|");
 		for (String id : pointsX.keySet()) {
 			if (connected != null && !connected.containsKey(id)) {
