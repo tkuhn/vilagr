@@ -68,7 +68,7 @@ public class VRenderEngine implements VilagrEngine {
 					types.put(nodeId, type.intern());
 				}
 				if (atts != null && !atts.isEmpty()) {
-					attributes.put(nodeId, type.intern());
+					attributes.put(nodeId, atts.intern());
 				}
 			}
 
