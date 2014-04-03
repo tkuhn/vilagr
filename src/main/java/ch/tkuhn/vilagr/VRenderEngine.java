@@ -16,6 +16,7 @@ public class VRenderEngine implements VilagrEngine {
 	private Map<String,Float> pointsX;
 	private Map<String,Float> pointsY;
 	private Map<String,String> types;
+	private Map<String,String> attributes;
 	private Map<String,Boolean> connected;
 
 	public VRenderEngine(Properties properties, File dir) {
@@ -36,6 +37,7 @@ public class VRenderEngine implements VilagrEngine {
 		pointsX = new HashMap<String,Float>();
 		pointsY = new HashMap<String,Float>();
 		types = new HashMap<String,String>();
+		attributes = new HashMap<String,String>();
 		if (params.getBoolean("ignore-isolates")) {
 			connected = new HashMap<String,Boolean>();
 		}
@@ -55,14 +57,19 @@ public class VRenderEngine implements VilagrEngine {
 
 	private void readNodes() {
 		log("Reading nodes...");
-		CoordIterator ci = new CoordIterator(params.getInputFile(), params.getTypeColumn(),
+		CoordIterator ci = new CoordIterator(params.getInputFile(), params.getTypeColumn(), params.getAttributePattern(),
 				new CoordIterator.CoordHandler() {
 			
 			@Override
-			public void handleCoord(String nodeId, String type, float x, float y) throws Exception {
+			public void handleCoord(String nodeId, String type, String atts, float x, float y) throws Exception {
 				pointsX.put(nodeId, x);
 				pointsY.put(nodeId, y);
-				types.put(nodeId, type.intern());
+				if (type != null) {
+					types.put(nodeId, type.intern());
+				}
+				if (atts != null && !atts.isEmpty()) {
+					attributes.put(nodeId, type.intern());
+				}
 			}
 
 		});
@@ -94,17 +101,23 @@ public class VRenderEngine implements VilagrEngine {
 
 	private void drawNodes() {
 		log("Drawing nodes...");
-		Color baseColor = new Color(0, 0, 255, (int) (params.getNodeOpacity() * 255));
+		Color baseColor = new Color(128, 128, 128, (int) (params.getNodeOpacity() * 255));
+		String[] atts = params.getAttributePattern().split("\\|");
 		for (String id : pointsX.keySet()) {
 			if (connected != null && !connected.containsKey(id)) {
 				// ignore isolates
 				continue;
 			}
-			Color color;
-			if (types.containsKey(id)) {
+			Color color = baseColor;
+			if (attributes.containsKey(id)) {
+				for (String a : atts) {
+					if (("|" + attributes.get(id) + "|").contains("|" + a + "|")) {
+						color = params.getAttributeColor(attributes.get(id));
+						break;
+					}
+				}
+			} else if (types.containsKey(id)) {
 				color = params.getTypeColor(types.get(id));
-			} else {
-				color = baseColor;
 			}
 			graphDrawer.drawNode(pointsX.get(id), pointsY.get(id), color);
 		}

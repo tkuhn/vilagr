@@ -25,7 +25,8 @@ public class VParams {
 
 	private Properties properties = new Properties();
 	private File dir;
-	private Map<String,Color> colorMap;
+	private Map<String,Color> typeColorMap;
+	private Map<String,Color> attColorMap;
 
 	public VParams(Properties properties, File dir) {
 		loadDefaultProperties();
@@ -128,16 +129,44 @@ public class VParams {
 	}
 
 	public Color getTypeColor(String type) {
-		if (colorMap == null) {
-			colorMap = new HashMap<String,Color>();
-			for (String s : get("node-colors").split(",")) {
-				if (s.isEmpty()) continue;
-				Color c = Color.decode(s.replaceFirst("^.*(#......)$", "$1"));
-				c = new Color(c.getRed(), c.getGreen(), c.getBlue(), (int) (getNodeOpacity() * 255));
-				colorMap.put(s.replaceFirst("^(.*)#......$", "$1"), c);
+		if (typeColorMap == null) {
+			initColorMaps();
+		}
+		return typeColorMap.get(type);
+	}
+
+	public Color getAttributeColor(String attribute) {
+		if (attColorMap == null) {
+			initColorMaps();
+		}
+		return attColorMap.get(attribute);
+	}
+
+	public String getAttributePattern() {
+		String p = "";
+		for (String s : get("node-colors").split(",")) {
+			if (s.isEmpty() || !s.startsWith("@")) continue;
+			String f = s.replaceFirst("^(.*)#......$", "$1");
+			if (!p.isEmpty()) p += "|";
+			p += f.substring(1);
+		}
+		return p;
+	}
+
+	private void initColorMaps() {
+		typeColorMap = new HashMap<String,Color>();
+		attColorMap = new HashMap<String,Color>();
+		for (String s : get("node-colors").split(",")) {
+			if (s.isEmpty()) continue;
+			Color c = Color.decode(s.replaceFirst("^.*(#......)$", "$1"));
+			c = new Color(c.getRed(), c.getGreen(), c.getBlue(), (int) (getNodeOpacity() * 255));
+			String f = s.replaceFirst("^(.*)#......$", "$1");
+			if (f.startsWith("@")) {
+				attColorMap.put(f.substring(1), c);
+			} else {
+				typeColorMap.put(f, c);
 			}
 		}
-		return colorMap.get(type);
 	}
 
 }

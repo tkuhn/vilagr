@@ -14,7 +14,7 @@ public class CoordIterator {
 
 	public static interface CoordHandler {
 
-		public void handleCoord(String nodeId, String type, float x, float y) throws Exception;
+		public void handleCoord(String nodeId, String type, String attributes, float x, float y) throws Exception;
 
 	}
 
@@ -27,15 +27,17 @@ public class CoordIterator {
 	private File file;
 	private CoordHandler handler;
 	private String typeColumn;
+	private String attNamePattern;
 
-	public CoordIterator(File file, String typeColumn, CoordHandler handler) {
+	public CoordIterator(File file, String typeColumn, String attNamePattern, CoordHandler handler) {
 		this.file = file;
 		this.typeColumn = typeColumn;
+		this.attNamePattern = attNamePattern;
 		this.handler = handler;
 	}
 
 	public CoordIterator(File file, CoordHandler handler) {
-		this(file, null, handler);
+		this(file, null, null, handler);
 	}
 
 	public void run() {
@@ -61,7 +63,7 @@ public class CoordIterator {
 			float x = Float.parseFloat(line.get(1));
 			float y = Float.parseFloat(line.get(2));
 			try {
-				handler.handleCoord(nodeId, null, x, y);
+				handler.handleCoord(nodeId, null, "", x, y);
 			} catch (Exception ex) {
 				ex.printStackTrace();
 				break;
@@ -73,6 +75,7 @@ public class CoordIterator {
 
 	private static final String idPattern = "^\\s*<node id=\"(.*?)\".*$";
 	private static final String typePattern = "^\\s*<attvalue.*? for=\"<TYPE>\".*? value=\"(.*?)\".*$";
+	private static final String attPattern = "^\\s*<attvalue.*? for=\"(<PATTERN>)\".*$";
 	private static final String coordPattern = "^\\s*<viz:position x=\"(.*?)\" y=\"(.*?)\".*$";
 
 	private void processGexf() throws IOException {
@@ -81,9 +84,14 @@ public class CoordIterator {
 		if (typeColumn != null) {
 			spTypePattern = typePattern.replace("<TYPE>", typeColumn);
 		}
+		String spAttPattern = null;
+		if (attNamePattern != null) {
+			spAttPattern = attPattern.replace("<PATTERN>", attNamePattern);
+		}
 		String line;
 		String type = null;
 		String nodeId = null;
+		String atts = "";
 		while ((line = reader.readLine()) != null) {
 			if (line.matches(idPattern)) {
 				if (nodeId != null) {
@@ -93,6 +101,9 @@ public class CoordIterator {
 				nodeId = line.replaceFirst(idPattern, "$1");
 			} else if (spTypePattern != null && line.matches(spTypePattern)) {
 				type = line.replaceFirst(spTypePattern, "$1");
+			} else if (spAttPattern != null && line.matches(spAttPattern)) {
+				if (!atts.isEmpty()) atts += "|";
+				atts += line.replaceFirst(attPattern, "$1");
 			} else if (line.matches(coordPattern)) {
 				if (nodeId == null) {
 					reader.close();
@@ -101,13 +112,14 @@ public class CoordIterator {
 					float x = Float.parseFloat(line.replaceFirst(coordPattern, "$1"));
 					float y = Float.parseFloat(line.replaceFirst(coordPattern, "$2"));
 					try {
-						handler.handleCoord(nodeId, type, x, y);
+						handler.handleCoord(nodeId, type, atts, x, y);
 					} catch (Exception ex) {
 						ex.printStackTrace();
 						break;
 					}
 					nodeId = null;
 					type = null;
+					atts = "";
 				}
 			}
 		}
