@@ -103,7 +103,7 @@ public class CoordIterator {
 				type = line.replaceFirst(spTypePattern, "$1");
 			} else if (spAttPattern != null && line.matches(spAttPattern)) {
 				if (!atts.isEmpty()) atts += "|";
-				atts += line.replaceFirst(attPattern, "$1");
+				atts += line.replaceFirst(spAttPattern, "$1");
 			} else if (line.matches(coordPattern)) {
 				if (nodeId == null) {
 					reader.close();
