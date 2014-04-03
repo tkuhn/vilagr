@@ -150,6 +150,7 @@ public class VParams {
 			if (!p.isEmpty()) p += "|";
 			p += f.substring(1);
 		}
+		if (p.isEmpty()) return null;
 		return p;
 	}
 
@@ -158,12 +159,15 @@ public class VParams {
 		attColorMap = new HashMap<String,Color>();
 		for (String s : get("node-colors").split(",")) {
 			if (s.isEmpty()) continue;
-			Color c = Color.decode(s.replaceFirst("^.*(#......)$", "$1"));
+			String colorString = s.replaceFirst("^.*(#......)$", "$1");
+			Color c = Color.decode(colorString);
 			c = new Color(c.getRed(), c.getGreen(), c.getBlue(), (int) (getNodeOpacity() * 255));
 			String f = s.replaceFirst("^(.*)#......$", "$1");
 			if (f.startsWith("@")) {
+				System.err.println("Attribute color: " + f.substring(1) + " " + colorString);
 				attColorMap.put(f.substring(1), c);
 			} else {
+				System.err.println("Type color: " + f + " " + colorString);
 				typeColorMap.put(f, c);
 			}
 		}
