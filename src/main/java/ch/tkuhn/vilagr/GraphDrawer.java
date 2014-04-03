@@ -100,7 +100,13 @@ public class GraphDrawer {
 			throw new RuntimeException("Edge drawing is not yet finished");
 		}
 		graphics.setColor(color);
-		graphics.fillOval((int) (x - nodeSize/2.0), (int) (y - nodeSize/2.0), nodeSize, nodeSize);
+		int hs = (int) (nodeSize/2.0);
+		for (int px = -hs ; px <= hs ; px++) {
+			for (int py = -hs ; py <= hs ; py++) {
+				if (px*px + py*py > hs*hs) continue;
+				graphics.fillRect(x + px, y + py, 1, 1);
+			}
+		}
 	}
 
 	public void drawNode(float preX, float preY, Color color) {
