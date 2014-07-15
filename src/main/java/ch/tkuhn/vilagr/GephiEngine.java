@@ -107,6 +107,7 @@ public class GephiEngine implements VilagrEngine {
 		props.putValue(PreviewProperty.EDGE_THICKNESS, edgeThickness);
 
 		if (params.doLayout()) {
+			logger.info("Calculate layout...");
 			OpenOrdLayoutBuilder b = new OpenOrdLayoutBuilder();
 			OpenOrdLayout layout = (OpenOrdLayout) b.buildLayout();
 			layout.resetPropertiesValues();
@@ -122,14 +123,19 @@ public class GephiEngine implements VilagrEngine {
 				layout.goAlgo();
 			}
 			layout.endAlgo();
+		} else {
+			logger.info("Skip layout");
 		}
 
 		String typeColumn = params.getTypeColumn();
 
 		if (params.doPartition()) {
+			logger.info("Calculate partition...");
 			Modularity modularity = new Modularity();
 			modularity.execute(gm, getAttributeModel());
 			typeColumn = Modularity.MODULARITY_CLASS;
+		} else {
+			logger.info("Skip partition");
 		}
 
 		AttributeColumn col = getAttributeColumn(typeColumn, AttributeType.STRING);
@@ -164,6 +170,7 @@ public class GephiEngine implements VilagrEngine {
 
 		for (String s : params.getOutputFormats()) {
 			if (s.isEmpty()) continue;
+			logger.info("Write file: " + s);
 			if (s.equals("png")) {
 				int size = params.getOutputSize();
 				PNGExporter pngexp = (PNGExporter) ec.getExporter("png");
