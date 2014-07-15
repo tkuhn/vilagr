@@ -3,7 +3,6 @@ package ch.tkuhn.vilagr;
 import java.awt.Color;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.Properties;
 
 import org.gephi.data.attributes.api.AttributeColumn;
@@ -179,13 +178,13 @@ public class GephiEngine implements VilagrEngine {
 				pngexp.setWorkspace(ws);
 				try {
 					ec.exportFile(new File(params.getDir(), outputName + ".png"), pngexp);
-				} catch (IOException ex) {
+				} catch (Exception ex) {
 					ex.printStackTrace();
 				}
 			} else {
 				try {
 					ec.exportFile(new File(params.getDir(), outputName + "." + s));
-				} catch (IOException ex) {
+				} catch (Exception ex) {
 					ex.printStackTrace();
 				}
 			}
