@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gexf xmlns="http://www.gexf.net/1.2draft" version="1.2" xmlns:viz="http://www.gexf.net/1.2draft/viz" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.gexf.net/1.2draft http://www.gexf.net/1.2draft/gexf.xsd">
-  <meta lastmodifieddate="2013-12-14">
+  <meta lastmodifieddate="2014-07-15">
     <creator>Gephi 0.8.1</creator>
     <description></description>
   </meta>
@@ -16,7 +16,7 @@
           <attvalue for="number" value="12"></attvalue>
         </attvalues>
         <viz:size value="10.0"></viz:size>
-        <viz:position x="-2.1050744" y="-45.231483" z="0.0"></viz:position>
+        <viz:position x="14.398832" y="-59.8304" z="0.0"></viz:position>
       </node>
       <node id="1.0" label="1.0">
         <attvalues>
@@ -24,7 +24,7 @@
           <attvalue for="number" value="13"></attvalue>
         </attvalues>
         <viz:size value="10.0"></viz:size>
-        <viz:position x="2.312268" y="-40.183212" z="0.0"></viz:position>
+        <viz:position x="11.542778" y="-60.73327" z="0.0"></viz:position>
       </node>
       <node id="2.0" label="2.0">
         <attvalues>
@@ -32,7 +32,7 @@
           <attvalue for="number" value="15"></attvalue>
         </attvalues>
         <viz:size value="10.0"></viz:size>
-        <viz:position x="1.6268935" y="-42.780746" z="0.0"></viz:position>
+        <viz:position x="13.070335" y="-54.394318" z="0.0"></viz:position>
       </node>
       <node id="3.0" label="3.0">
         <attvalues>
@@ -40,7 +40,7 @@
           <attvalue for="number" value="19"></attvalue>
         </attvalues>
         <viz:size value="10.0"></viz:size>
-        <viz:position x="-0.6749794" y="-8.397283" z="0.0"></viz:position>
+        <viz:position x="11.718331" y="-51.9971" z="0.0"></viz:position>
       </node>
       <node id="4.0" label="4.0">
         <attvalues>
@@ -48,7 +48,7 @@
           <attvalue for="number" value="21"></attvalue>
         </attvalues>
         <viz:size value="10.0"></viz:size>
-        <viz:position x="-107.49719" y="-122.0907" z="0.0"></viz:position>
+        <viz:position x="15.002093" y="-47.40712" z="0.0"></viz:position>
       </node>
       <node id="5.0" label="5.0">
         <attvalues>
@@ -56,7 +56,7 @@
           <attvalue for="number" value="24"></attvalue>
         </attvalues>
         <viz:size value="10.0"></viz:size>
-        <viz:position x="22.475922" y="128.24265" z="0.0"></viz:position>
+        <viz:position x="19.991516" y="-49.072605" z="0.0"></viz:position>
         <viz:color r="128" g="255" b="0"></viz:color>
       </node>
       <node id="6.0" label="6.0">
@@ -65,7 +65,7 @@
           <attvalue for="number" value="34"></attvalue>
         </attvalues>
         <viz:size value="10.0"></viz:size>
-        <viz:position x="-1.462374" y="-8.018533" z="0.0"></viz:position>
+        <viz:position x="9.7457905" y="-29.53903" z="0.0"></viz:position>
         <viz:color r="128" g="255" b="0"></viz:color>
       </node>
       <node id="7.0" label="7.0">
@@ -74,7 +74,7 @@
           <attvalue for="number" value="39"></attvalue>
         </attvalues>
         <viz:size value="10.0"></viz:size>
-        <viz:position x="3.8865411" y="-13.643051" z="0.0"></viz:position>
+        <viz:position x="11.865386" y="-27.130505" z="0.0"></viz:position>
         <viz:color r="128" g="255" b="0"></viz:color>
       </node>
       <node id="8.0" label="8.0">
@@ -83,7 +83,7 @@
           <attvalue for="number" value="41"></attvalue>
         </attvalues>
         <viz:size value="10.0"></viz:size>
-        <viz:position x="407.97574" y="-6.9220886" z="0.0"></viz:position>
+        <viz:position x="12.565698" y="-19.036488" z="0.0"></viz:position>
         <viz:color r="128" g="255" b="0"></viz:color>
       </node>
       <node id="9.0" label="9.0">
@@ -92,7 +92,7 @@
           <attvalue for="number" value="42"></attvalue>
         </attvalues>
         <viz:size value="10.0"></viz:size>
-        <viz:position x="150.83365" y="230.61642" z="0.0"></viz:position>
+        <viz:position x="7.1721773" y="-26.948357" z="0.0"></viz:position>
         <viz:color r="128" g="255" b="0"></viz:color>
       </node>
     </nodes>
