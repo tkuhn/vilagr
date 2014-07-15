@@ -37,6 +37,7 @@ import org.gephi.preview.api.PreviewProperty;
 import org.gephi.preview.types.EdgeColor;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
+import org.gephi.statistics.plugin.Modularity;
 import org.openide.util.Lookup;
 
 public class GephiEngine implements VilagrEngine {
@@ -119,7 +120,15 @@ public class GephiEngine implements VilagrEngine {
 			layout.endAlgo();
 		}
 
-		AttributeColumn col = getAttributeColumn(params.getTypeColumn(), AttributeType.STRING);
+		String typeColumn = params.getTypeColumn();
+
+		if (params.doPartition()) {
+			Modularity modularity = new Modularity();
+			modularity.execute(gm, getAttributeModel());
+			typeColumn = Modularity.MODULARITY_CLASS;
+		}
+
+		AttributeColumn col = getAttributeColumn(typeColumn, AttributeType.STRING);
 		PartitionController partitionController = Lookup.getDefault().lookup(PartitionController.class);
 		Partition p = partitionController.buildPartition(col, gm.getGraph());
 		NodeColorTransformer transform = new NodeColorTransformer();
@@ -183,9 +192,12 @@ public class GephiEngine implements VilagrEngine {
 		return 10.0f;
 	}
 
+	private AttributeModel getAttributeModel() {
+		return Lookup.getDefault().lookup(AttributeController.class).getModel();
+	}
+
 	private AttributeColumn getAttributeColumn(String name, AttributeType type) {
-		AttributeModel attributeModelLocal = Lookup.getDefault().lookup(AttributeController.class).getModel();
-		AttributeTable nodeTable = attributeModelLocal.getNodeTable();
+		AttributeTable nodeTable = getAttributeModel().getNodeTable();
 		AttributeColumn col = nodeTable.getColumn(name);
 		if (col == null) {
 			col = nodeTable.addColumn(name, type);

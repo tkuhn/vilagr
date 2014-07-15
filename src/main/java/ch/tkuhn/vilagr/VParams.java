@@ -100,7 +100,7 @@ public class VParams {
 	}
 
 	public boolean doLayout() {
-		return !get("do-layout").equals("no");
+		return !"no".equals(get("do-layout"));
 	}
 
 	public long getRandomSeed() {
@@ -126,6 +126,10 @@ public class VParams {
 
 	public String getTypeColumn() {
 		return get("type-column");
+	}
+
+	public boolean doPartition() {
+		return "yes".equals(get("do-partition"));
 	}
 
 	public Color getTypeColor(String type) {
