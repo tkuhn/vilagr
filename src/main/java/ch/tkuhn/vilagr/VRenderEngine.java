@@ -9,7 +9,12 @@ import java.util.Properties;
 
 import javax.imageio.ImageIO;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class VRenderEngine implements VilagrEngine {
+
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	private VParams params;
 	private GraphDrawer graphDrawer;
@@ -58,9 +63,9 @@ public class VRenderEngine implements VilagrEngine {
 	private void readNodes() {
 		String tc = params.getTypeColumn();
 		String ap = params.getAttributePattern();
-		log("Type column: " + tc);
-		log("Attribute pattern: " + ap);
-		log("Reading nodes...");
+		logger.info("Type column: " + tc);
+		logger.info("Attribute pattern: " + ap);
+		logger.info("Reading nodes...");
 		CoordIterator ci = new CoordIterator(params.getInputFile(), tc, ap,
 				new CoordIterator.CoordHandler() {
 			
@@ -81,7 +86,7 @@ public class VRenderEngine implements VilagrEngine {
 	}
 
 	private void drawEdges() {
-		log("Drawing edges...");
+		logger.info("Drawing edges...");
 		EdgeIterator ei = new EdgeIterator(params.getInputFile(), new EdgeIterator.EdgeHandler() {
 
 			@Override
@@ -104,7 +109,7 @@ public class VRenderEngine implements VilagrEngine {
 	}
 
 	private void drawNodes() {
-		log("Drawing nodes...");
+		logger.info("Drawing nodes...");
 		Color baseColor = new Color(95, 95, 95, (int) (params.getNodeOpacity() * 255));
 		String[] atts = new String[] {};
 		String attPattern = params.getAttributePattern();
@@ -132,15 +137,11 @@ public class VRenderEngine implements VilagrEngine {
 	}
 
 	private void writeImage() throws IOException {
-		log("Writing image...");
+		logger.info("Writing image...");
 		for (String format : params.getOutputFormats()) {
 			File outputFile = new File(params.getDir(), params.getOutputFileName() + "." + format);
 			ImageIO.write(graphDrawer.getImage(), format, outputFile);
 		}
-	}
-
-	private void log(String text) {
-		System.err.println(text);
 	}
 
 }

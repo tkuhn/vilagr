@@ -39,8 +39,12 @@ import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.statistics.plugin.Modularity;
 import org.openide.util.Lookup;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GephiEngine implements VilagrEngine {
+
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	private VParams params;
 	private GraphModel gm;
@@ -137,7 +141,7 @@ public class GephiEngine implements VilagrEngine {
 		};
 
 		int i = 0;
-		System.out.println("Color codes:");
+		logger.info("Color codes:");
 		for (Part part : p.getParts()) {
 			String v;
 			if (part.getValue() == null) {
@@ -150,7 +154,7 @@ public class GephiEngine implements VilagrEngine {
 				color = defaultColors[i];
 			}
 			transform.getMap().put(part.getValue(), color);
-			System.out.println(String.format("#%06X", (0xFFFFFF & color.getRGB())) + " " + v);
+			logger.info(String.format("#%06X", (0xFFFFFF & color.getRGB())) + " " + v);
 			i = (i + 1) % defaultColors.length;
 		}
 		partitionController.transform(p, transform);

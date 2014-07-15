@@ -4,7 +4,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class Vilagr {
+
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	public static void main(String[] args) throws IOException {
 		if (args.length != 1) {
@@ -29,16 +34,20 @@ public class Vilagr {
 	}
 
 	public void run() {
+		logger.info("*** Starting Vilagr ***");
 		String engineId = params.get("engine").toLowerCase();
 		VilagrEngine engine;
 		if ("gephi".equals(engineId)) {
+			logger.info("Using Gephi engine");
 			engine = new GephiEngine(params);
 		} else if ("vrender".equals(engineId)) {
+			logger.info("Using VRender engine");
 			engine = new VRenderEngine(params);
 		} else {
 			throw new RuntimeException("Unknown engine: " + engineId);
 		}
 		engine.run();
+		logger.info("*** finished ***");
 	}
 
 }

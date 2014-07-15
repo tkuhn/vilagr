@@ -9,7 +9,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class VParams {
+
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	private static Properties defaultProperties;
 
@@ -168,10 +173,10 @@ public class VParams {
 			c = new Color(c.getRed(), c.getGreen(), c.getBlue(), (int) (getNodeOpacity() * 255));
 			String f = s.replaceFirst("^(.*)#......$", "$1");
 			if (f.startsWith("@")) {
-				System.err.println("Attribute color: " + f.substring(1) + " " + colorString);
+				logger.info("Attribute color: " + f.substring(1) + " " + colorString);
 				attColorMap.put(f.substring(1), c);
 			} else {
-				System.err.println("Type color: " + f + " " + colorString);
+				logger.info("Type color: " + f + " " + colorString);
 				typeColorMap.put(f, c);
 			}
 		}
