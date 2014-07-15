@@ -59,31 +59,35 @@ public class GephiEngine implements VilagrEngine {
 	@Override
 	@SuppressWarnings("rawtypes")
 	public void run() {
+		logger.info("Initializing Gephi engine...");
 		ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
 		pc.newProject();
 		Workspace ws = pc.getCurrentWorkspace();
 		ImportController imp = Lookup.getDefault().lookup(ImportController.class);
 		Container c = null;
+		File inputFile = params.getInputFile();
+		logger.info("Importing from file: " + inputFile);
 		try {
-			c = imp.importFile(params.getInputFile());
+			c = imp.importFile(inputFile);
 		} catch (FileNotFoundException ex) {
-			ex.printStackTrace();
+			logger.error("File not found: " + inputFile, ex);
 		}
 		if ("no".equals(params.get("allow-auto-node"))) {
 			c.setAllowAutoNode(false);
 		} else if ("yes".equals(params.get("allow-auto-node"))) {
 			c.setAllowAutoNode(true);
 		}
+		logger.info("Loading graph...");
 		imp.process(c, new DefaultProcessor(), ws);
 		gm = Lookup.getDefault().lookup(GraphController.class).getModel();
 
 		String filterProp = params.get("filter");
 		if (filterProp != null) {
+			logger.info("Filtering...");
 			String filterCol = filterProp.split("#")[0];
 			FilterController fc = Lookup.getDefault().lookup(FilterController.class);
 			AttributeColumn ac = getAttributeColumn(filterCol, AttributeType.STRING);
-			AttributeEqualBuilder.EqualStringFilter filter =
-					new AttributeEqualBuilder.EqualStringFilter(ac);
+			AttributeEqualBuilder.EqualStringFilter filter = new AttributeEqualBuilder.EqualStringFilter(ac);
 			filter.init(gm.getGraph());
 			filter.setPattern(filterProp.split("#")[1]);
 			filter.setUseRegex(true);
@@ -146,27 +150,31 @@ public class GephiEngine implements VilagrEngine {
 		};
 
 		int i = 0;
-		logger.info("Color codes:");
-		for (Part part : p.getParts()) {
-			String v;
-			if (part.getValue() == null) {
-				v = "";
-			} else {
-				v = part.getValue().toString();
+		logger.info("Number of partitions: " + p.getPartsCount());
+		if (p.getPartsCount() < 100) {
+			logger.info("Color codes:");
+			for (Part part : p.getParts()) {
+				String v;
+				if (part.getValue() == null) {
+					v = "";
+				} else {
+					v = part.getValue().toString();
+				}
+				Color color = params.getTypeColor(v);
+				if (color == null) {
+					color = defaultColors[i];
+				}
+				transform.getMap().put(part.getValue(), color);
+				logger.info(String.format("#%06X", (0xFFFFFF & color.getRGB())) + " " + v);
+				i = (i + 1) % defaultColors.length;
 			}
-			Color color = params.getTypeColor(v);
-			if (color == null) {
-				color = defaultColors[i];
-			}
-			transform.getMap().put(part.getValue(), color);
-			logger.info(String.format("#%06X", (0xFFFFFF & color.getRGB())) + " " + v);
-			i = (i + 1) % defaultColors.length;
 		}
 		partitionController.transform(p, transform);
 
 		ExportController ec = Lookup.getDefault().lookup(ExportController.class);
 		String outputName = params.getOutputFileName();
 
+		logger.info("Writing output...");
 		for (String s : params.getOutputFormats()) {
 			if (s.isEmpty()) continue;
 			logger.info("Write file: " + s);
@@ -189,7 +197,7 @@ public class GephiEngine implements VilagrEngine {
 				}
 			}
 		}
-
+		logger.info("Finished running Gephi engine");
 	}
 
 	private float getNodeSize() {
