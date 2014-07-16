@@ -44,6 +44,19 @@ import org.slf4j.LoggerFactory;
 
 public class GephiEngine implements VilagrEngine {
 
+	private static Color[] defaultColors = new Color[] {
+		new Color(0, 0, 255), new Color(0, 255, 0), new Color(255, 0, 0),
+		new Color(0, 255, 255), new Color(255, 255, 0), new Color(255, 0, 255),
+		new Color(0, 255, 123), new Color(255, 123, 0), new Color(123, 0, 255),
+		new Color(0, 123, 255), new Color(123, 255, 0), new Color(255, 0, 123),
+		new Color(123, 123, 255), new Color(123, 255, 123), new Color(255, 123, 123),
+		new Color(123, 123, 0), new Color(123, 0, 123), new Color(0, 123, 123),
+		new Color(0, 255, 170), new Color(255, 170, 0), new Color(170, 0, 255),
+		new Color(0, 170, 255), new Color(170, 255, 0), new Color(255, 0, 170),
+		new Color(0, 85, 170), new Color(85, 170, 0), new Color(170, 0, 85),
+		new Color(0, 170, 85), new Color(170, 85, 0), new Color(85, 0, 170)
+	};
+
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	private VParams params;
@@ -155,9 +168,6 @@ public class GephiEngine implements VilagrEngine {
 		PartitionController partitionController = Lookup.getDefault().lookup(PartitionController.class);
 		Partition p = partitionController.buildPartition(col, gm.getGraph());
 		NodeColorTransformer transform = new NodeColorTransformer();
-		Color[] defaultColors = new Color[] {
-			Color.BLUE, Color.RED, Color.GREEN, Color.YELLOW, Color.PINK, Color.MAGENTA, Color.ORANGE, Color.CYAN
-		};
 
 		int i = 0;
 		logger.info("Number of partitions: " + p.getPartsCount());
