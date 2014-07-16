@@ -157,7 +157,10 @@ public class GephiEngine implements VilagrEngine {
 
 		if (params.doPartition()) {
 			logger.info("Calculate partition...");
+			double resolution = params.getDouble("partition-resolution");
+			logger.info("Partition resolution: " + resolution);
 			Modularity modularity = new Modularity();
+			modularity.setResolution(resolution);
 			modularity.execute(gm, getAttributeModel());
 			typeColumn = Modularity.MODULARITY_CLASS;
 		} else {

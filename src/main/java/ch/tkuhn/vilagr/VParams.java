@@ -73,6 +73,13 @@ public class VParams {
 		return 0.0f;
 	}
 
+	public double getDouble(String key) {
+		if (properties.containsKey(key)) {
+			return Double.parseDouble(properties.getProperty(key).toString());
+		}
+		return 0.0;
+	}
+
 	public boolean getBoolean(String key) {
 		if (properties.containsKey(key)) {
 			return Boolean.parseBoolean(properties.getProperty(key).toString());
