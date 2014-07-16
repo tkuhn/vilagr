@@ -13,6 +13,7 @@ import org.gephi.data.attributes.api.AttributeType;
 import org.gephi.filters.api.FilterController;
 import org.gephi.filters.api.Query;
 import org.gephi.filters.plugin.attribute.AttributeEqualBuilder;
+import org.gephi.filters.plugin.graph.GiantComponentBuilder.GiantComponentFilter;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.GraphView;
@@ -83,7 +84,7 @@ public class GephiEngine implements VilagrEngine {
 
 		String filterProp = params.get("filter");
 		if (filterProp != null) {
-			logger.info("Filtering...");
+			logger.info("Filtering: " + filterProp);
 			String filterCol = filterProp.split("#")[0];
 			FilterController fc = Lookup.getDefault().lookup(FilterController.class);
 			AttributeColumn ac = getAttributeColumn(filterCol, AttributeType.STRING);
@@ -91,6 +92,15 @@ public class GephiEngine implements VilagrEngine {
 			filter.init(gm.getGraph());
 			filter.setPattern(filterProp.split("#")[1]);
 			filter.setUseRegex(true);
+			Query query = fc.createQuery(filter);
+			GraphView view = fc.filter(query);
+			gm.setVisibleView(view);
+		}
+		if (params.getBoolean("only-giant")) {
+			logger.info("Filter: use only giant component");
+			FilterController fc = Lookup.getDefault().lookup(FilterController.class);
+			GiantComponentFilter filter = new GiantComponentFilter();
+			filter.init(gm.getGraph());
 			Query query = fc.createQuery(filter);
 			GraphView view = fc.filter(query);
 			gm.setVisibleView(view);
