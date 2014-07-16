@@ -21,6 +21,8 @@ import org.gephi.graph.api.Node;
 import org.gephi.graph.api.NodeIterator;
 import org.gephi.io.exporter.api.ExportController;
 import org.gephi.io.exporter.preview.PNGExporter;
+import org.gephi.io.exporter.spi.Exporter;
+import org.gephi.io.exporter.spi.GraphExporter;
 import org.gephi.io.importer.api.Container;
 import org.gephi.io.importer.api.ImportController;
 import org.gephi.io.processor.plugin.DefaultProcessor;
@@ -198,25 +200,25 @@ public class GephiEngine implements VilagrEngine {
 
 		logger.info("Writing output...");
 		for (String s : params.getOutputFormats()) {
+			Exporter exporter = ec.getExporter(s);
 			if (s.isEmpty()) continue;
 			logger.info("Write file: " + s);
-			if (s.equals("png")) {
+			if (exporter instanceof PNGExporter) {
+				PNGExporter pngexp = (PNGExporter) exporter;
 				int size = params.getOutputSize();
-				PNGExporter pngexp = (PNGExporter) ec.getExporter("png");
 				pngexp.setHeight(size);
 				pngexp.setWidth(size);
 				pngexp.setWorkspace(ws);
-				try {
-					ec.exportFile(new File(params.getDir(), outputName + ".png"), pngexp);
-				} catch (Exception ex) {
-					ex.printStackTrace();
-				}
-			} else {
-				try {
-					ec.exportFile(new File(params.getDir(), outputName + "." + s));
-				} catch (Exception ex) {
-					ex.printStackTrace();
-				}
+			} else if (exporter instanceof GraphExporter) {
+				GraphExporter graphexp = (GraphExporter) exporter;
+				boolean exportVisible = params.getBoolean("export-visible");
+				logger.info("Export only visible part of graph: " + exportVisible);
+				graphexp.setExportVisible(exportVisible);
+			}
+			try {
+				ec.exportFile(new File(params.getDir(), outputName + "." + s), exporter);
+			} catch (Exception ex) {
+				ex.printStackTrace();
 			}
 		}
 		logger.info("Finished running Gephi engine");
