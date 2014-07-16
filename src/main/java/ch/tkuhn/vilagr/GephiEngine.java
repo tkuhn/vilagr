@@ -151,23 +151,22 @@ public class GephiEngine implements VilagrEngine {
 
 		int i = 0;
 		logger.info("Number of partitions: " + p.getPartsCount());
-		if (p.getPartsCount() < 100) {
-			logger.info("Color codes:");
-			for (Part part : p.getParts()) {
-				String v;
-				if (part.getValue() == null) {
-					v = "";
-				} else {
-					v = part.getValue().toString();
-				}
-				Color color = params.getTypeColor(v);
-				if (color == null) {
-					color = defaultColors[i];
-				}
-				transform.getMap().put(part.getValue(), color);
-				logger.info(String.format("#%06X", (0xFFFFFF & color.getRGB())) + " " + v);
-				i = (i + 1) % defaultColors.length;
+		for (Part part : p.getParts()) {
+			String v;
+			if (part.getValue() == null) {
+				v = "";
+			} else {
+				v = part.getValue().toString();
 			}
+			Color color = params.getTypeColor(v);
+			if (color == null) {
+				color = defaultColors[i];
+			}
+			transform.getMap().put(part.getValue(), color);
+			if (p.getPartsCount() < 100) {
+				logger.info("Color code: " + String.format("#%06X", (0xFFFFFF & color.getRGB())) + " " + v);
+			}
+			i = (i + 1) % defaultColors.length;
 		}
 		partitionController.transform(p, transform);
 
