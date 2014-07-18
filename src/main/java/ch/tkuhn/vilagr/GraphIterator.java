@@ -4,15 +4,23 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.supercsv.io.CsvListReader;
 import org.supercsv.prefs.CsvPreference;
 
-// Iterates over the edges read from a gexf file.
-public class EdgeIterator {
+/**
+ * Iterates over the nodes and edges of a graph read from a CSV or GEXF file.
+ *
+ * @author Tobias Kuhn
+ */
+public class GraphIterator {
 
-	public static interface EdgeHandler {
+	public static interface GraphHandler {
+
+		public void handleNode(String nodeId, Map<String,String> attributes) throws Exception;
 
 		public void handleEdge(String nodeId1, String nodeId2) throws Exception;
 
@@ -25,9 +33,11 @@ public class EdgeIterator {
 	}
 
 	private File file;
-	private EdgeHandler handler;
+	private GraphHandler handler;
+	private boolean nodeHandlingEnabled = true;
+	private boolean edgeHandlingEnabled = true;
 
-	public EdgeIterator(File file, EdgeHandler handler) {
+	public GraphIterator(File file, GraphHandler handler) {
 		this.file = file;
 		this.handler = handler;
 	}
@@ -44,6 +54,14 @@ public class EdgeIterator {
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}
+	}
+
+	public void setNodeHandlingEnabled(boolean nodeHandlingEnabled) {
+		this.nodeHandlingEnabled = nodeHandlingEnabled;
+	}
+
+	public void setEdgeHandlingEnabled(boolean edgeHandlingEnabled) {
+		this.edgeHandlingEnabled = edgeHandlingEnabled;
 	}
 
 	private void processCsv() throws IOException {
@@ -64,13 +82,33 @@ public class EdgeIterator {
 	}
 
 
+	private static final String nodeStartPattern = "^\\s*<node id=\"(.*?)\".*$";
+	private static final String nodeAttPattern = "^\\s*<attvalue for=\"(.*?)\" value=\"(.*?)\".*$";
+	private static final String nodeEndPattern = "^\\s*</node>.*$";
 	private static final String edgePattern = "^\\s*<edge.*? source=\"(.*?)\".*? target=\"(.*?)\".*$";
 
 	private void processGexf() throws IOException {
 		BufferedReader reader = new BufferedReader(new FileReader(file), 64*1024);
+		String nodeId = null;
+		Map<String,String> atts = null;
 		String line;
 		while ((line = reader.readLine()) != null) {
-			if (line.matches(edgePattern)) {
+			if (nodeHandlingEnabled && nodeId == null && line.matches(nodeStartPattern)) {
+				nodeId = line.replaceFirst(nodeStartPattern, "$1");
+				atts = new HashMap<String,String>();
+			} else if (nodeHandlingEnabled && nodeId != null && line.matches(nodeAttPattern)) {
+				String name = line.replaceFirst(nodeAttPattern, "$1");
+				String value = line.replaceFirst(nodeAttPattern, "$2");
+				atts.put(name, value);
+			} else if (nodeHandlingEnabled && nodeId != null && line.matches(nodeEndPattern)) {
+				try {
+					handler.handleNode(nodeId, atts);
+				} catch (Exception ex) {
+					ex.printStackTrace();
+					break;
+				}
+				nodeId = null;
+			} else if (edgeHandlingEnabled && line.matches(edgePattern)) {
 				String nodeId1 = line.replaceFirst(edgePattern, "$1");
 				String nodeId2 = line.replaceFirst(edgePattern, "$2");
 				try {

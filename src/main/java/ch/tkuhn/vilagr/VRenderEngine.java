@@ -87,8 +87,12 @@ public class VRenderEngine implements VilagrEngine {
 
 	private void drawEdges() {
 		logger.info("Drawing edges...");
-		EdgeIterator ei = new EdgeIterator(params.getInputFile(), new EdgeIterator.EdgeHandler() {
+		GraphIterator ei = new GraphIterator(params.getInputFile(), new GraphIterator.GraphHandler() {
 
+			@Override
+			public void handleNode(String nodeId, Map<String,String> atts) throws Exception {
+			}
+	
 			@Override
 			public void handleEdge(String nodeId1, String nodeId2) throws Exception {
 				if (!pointsX.containsKey(nodeId1) || !pointsX.containsKey(nodeId2)) return;
@@ -104,6 +108,7 @@ public class VRenderEngine implements VilagrEngine {
 			}
 
 		});
+		ei.setNodeHandlingEnabled(false);
 		ei.run();
 		graphDrawer.finishEdgeDrawing();
 	}
