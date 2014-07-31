@@ -10,6 +10,7 @@ import org.supercsv.io.CsvListReader;
 import org.supercsv.prefs.CsvPreference;
 
 // Iterates over the nodes and their coordinates read from a csv or gexf file.
+// TODO merge this class into GraphIterator
 public class CoordIterator {
 
 	public static interface CoordHandler {

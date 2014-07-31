@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.supercsv.io.CsvListReader;
 import org.supercsv.prefs.CsvPreference;
 
@@ -20,7 +21,7 @@ public class GraphIterator {
 
 	public static interface GraphHandler {
 
-		public void handleNode(String nodeId, Map<String,String> attributes) throws Exception;
+		public void handleNode(String nodeId, Pair<Float,Float> coords, Map<String,String> attributes) throws Exception;
 
 		public void handleEdge(String nodeId1, String nodeId2) throws Exception;
 
@@ -84,6 +85,7 @@ public class GraphIterator {
 
 	private static final String nodeStartPattern = "^\\s*<node id=\"(.*?)\".*$";
 	private static final String nodeAttPattern = "^\\s*<attvalue for=\"(.*?)\" value=\"(.*?)\".*$";
+	private static final String coordPattern = "^\\s*<viz:position x=\"(.*?)\" y=\"(.*?)\".*$";
 	private static final String nodeEndPattern = "^\\s*</node>.*$";
 	private static final String edgePattern = "^\\s*<edge.*? source=\"(.*?)\".*? target=\"(.*?)\".*$";
 
@@ -91,6 +93,7 @@ public class GraphIterator {
 		BufferedReader reader = new BufferedReader(new FileReader(file), 64*1024);
 		String nodeId = null;
 		Map<String,String> atts = null;
+		Pair<Float,Float> coords = null;
 		String line;
 		while ((line = reader.readLine()) != null) {
 			if (nodeHandlingEnabled && nodeId == null && line.matches(nodeStartPattern)) {
@@ -102,12 +105,16 @@ public class GraphIterator {
 				atts.put(name, value);
 			} else if (nodeHandlingEnabled && nodeId != null && line.matches(nodeEndPattern)) {
 				try {
-					handler.handleNode(nodeId, atts);
+					handler.handleNode(nodeId, coords, atts);
 				} catch (Exception ex) {
 					ex.printStackTrace();
 					break;
 				}
 				nodeId = null;
+			} else if (nodeHandlingEnabled && nodeId != null && line.matches(coordPattern)) {
+				float x = Float.parseFloat(line.replaceFirst(coordPattern, "$1"));
+				float y = Float.parseFloat(line.replaceFirst(coordPattern, "$2"));
+				coords = Pair.of(x, y);
 			} else if (edgeHandlingEnabled && line.matches(edgePattern)) {
 				String nodeId1 = line.replaceFirst(edgePattern, "$1");
 				String nodeId2 = line.replaceFirst(edgePattern, "$2");

@@ -9,6 +9,7 @@ import java.util.Properties;
 
 import javax.imageio.ImageIO;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -90,7 +91,7 @@ public class VRenderEngine implements VilagrEngine {
 		GraphIterator ei = new GraphIterator(params.getInputFile(), new GraphIterator.GraphHandler() {
 
 			@Override
-			public void handleNode(String nodeId, Map<String,String> atts) throws Exception {
+			public void handleNode(String nodeId, Pair<Float, Float> coords, Map<String, String> attributes) throws Exception {
 			}
 	
 			@Override
