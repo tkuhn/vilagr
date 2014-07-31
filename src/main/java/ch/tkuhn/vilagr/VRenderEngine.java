@@ -96,7 +96,7 @@ public class VRenderEngine implements VilagrEngine {
 		GraphIterator ei = new GraphIterator(params.getInputFile(), new GraphIterator.GraphHandler() {
 
 			@Override
-			public void handleNode(String nodeId, Pair<Float, Float> coords, Map<String, String> attributes) throws Exception {
+			public void handleNode(String nodeId, Pair<Float, Float> coords, Color color, Map<String, String> attributes) throws Exception {
 			}
 	
 			@Override

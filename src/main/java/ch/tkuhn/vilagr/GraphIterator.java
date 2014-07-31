@@ -1,5 +1,6 @@
 package ch.tkuhn.vilagr;
 
+import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -21,7 +22,7 @@ public class GraphIterator {
 
 	public static interface GraphHandler {
 
-		public void handleNode(String nodeId, Pair<Float,Float> coords, Map<String,String> attributes) throws Exception;
+		public void handleNode(String nodeId, Pair<Float,Float> coords, Color color, Map<String,String> attributes) throws Exception;
 
 		public void handleEdge(String nodeId1, String nodeId2) throws Exception;
 
@@ -86,6 +87,7 @@ public class GraphIterator {
 	private static final String nodeStartPattern = "^\\s*<node id=\"(.*?)\".*$";
 	private static final String nodeAttPattern = "^\\s*<attvalue for=\"(.*?)\" value=\"(.*?)\".*$";
 	private static final String coordPattern = "^\\s*<viz:position x=\"(.*?)\" y=\"(.*?)\".*$";
+	private static final String colorPattern = "^\\s*<viz:color r=\"(.*?)\" g=\"(.*?)\" b=\"(.*?)\".*$";
 	private static final String nodeEndPattern = "^\\s*</node>.*$";
 	private static final String edgePattern = "^\\s*<edge.*? source=\"(.*?)\".*? target=\"(.*?)\".*$";
 
@@ -94,6 +96,7 @@ public class GraphIterator {
 		String nodeId = null;
 		Map<String,String> atts = null;
 		Pair<Float,Float> coords = null;
+		Color color = null;
 		String line;
 		while ((line = reader.readLine()) != null) {
 			if (nodeHandlingEnabled && nodeId == null && line.matches(nodeStartPattern)) {
@@ -105,7 +108,7 @@ public class GraphIterator {
 				atts.put(name, value);
 			} else if (nodeHandlingEnabled && nodeId != null && line.matches(nodeEndPattern)) {
 				try {
-					handler.handleNode(nodeId, coords, atts);
+					handler.handleNode(nodeId, coords, color, atts);
 				} catch (Exception ex) {
 					ex.printStackTrace();
 					break;
@@ -115,6 +118,11 @@ public class GraphIterator {
 				float x = Float.parseFloat(line.replaceFirst(coordPattern, "$1"));
 				float y = Float.parseFloat(line.replaceFirst(coordPattern, "$2"));
 				coords = Pair.of(x, y);
+			} else if (nodeHandlingEnabled && nodeId != null && line.matches(colorPattern)) {
+				int r = Integer.parseInt(line.replaceFirst(colorPattern, "$1"));
+				int g = Integer.parseInt(line.replaceFirst(colorPattern, "$2"));
+				int b = Integer.parseInt(line.replaceFirst(colorPattern, "$3"));
+				color = new Color(r, g, b);
 			} else if (edgeHandlingEnabled && line.matches(edgePattern)) {
 				String nodeId1 = line.replaceFirst(edgePattern, "$1");
 				String nodeId2 = line.replaceFirst(edgePattern, "$2");
