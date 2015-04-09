@@ -6,9 +6,11 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import javax.imageio.ImageIO;
 
@@ -29,6 +31,7 @@ public class VRenderEngine implements VilagrEngine {
 	private Map<String,String> types;
 	private Map<String,String> attributes;
 	private Map<String,Boolean> connected;
+	private Set<String> showOnlyTypes;
 
 	public VRenderEngine(Properties properties, File dir) {
 		params = new VParams(properties, dir);
@@ -51,6 +54,12 @@ public class VRenderEngine implements VilagrEngine {
 		attributes = new HashMap<String,String>();
 		if (params.getBoolean("ignore-isolates")) {
 			connected = new HashMap<String,Boolean>();
+		}
+		if (params.get("show-only-type").length() > 0) {
+			showOnlyTypes = new HashSet<String>();
+			for (String s : params.get("show-only-type").split(",")) {
+				showOnlyTypes.add(s);
+			}
 		}
 	}
 
@@ -77,6 +86,9 @@ public class VRenderEngine implements VilagrEngine {
 			
 			@Override
 			public void handleCoord(String nodeId, String type, String atts, float x, float y) throws Exception {
+				if (showOnlyTypes != null && !showOnlyTypes.contains(type)) {
+					return;
+				}
 				pointsX.put(nodeId, x);
 				pointsY.put(nodeId, y);
 				if (type != null) {
