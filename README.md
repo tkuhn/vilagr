@@ -9,6 +9,11 @@ Visualization of large graphs based on Gephi.
 Install Dependencies
 --------------------
 
+(Update on 6 October 2015:
+Check this reply, maybe the things below can now be done in an easier way:
+https://github.com/gephi/gephi-toolkit/issues/2#issuecomment-145868185
+)
+
 Build Gephi toolkit 0.8.2 from sources and install with Maven:
 
     mvn install:install-file \
